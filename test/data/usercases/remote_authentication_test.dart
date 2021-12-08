@@ -24,16 +24,20 @@ abstract class IHttpClient {
 
 @GenerateMocks([IHttpClient])
 void main() {
-  test('Quando usar a URL certa HTTPClient', () async {
-    final httpClient = MockIHttpClient();
+  RemoteAuthentication? sut;
+  MockIHttpClient? httpClient;
+  String? url;
 
-    final url = faker.internet.httpUrl();
-
+  setUp(() {
+    httpClient = MockIHttpClient();
+    url = faker.internet.httpUrl();
     //classe que sempre esta testando = sut
-    final sut = RemoteAuthentication(httpClient: httpClient, url: url);
+    sut = RemoteAuthentication(httpClient: httpClient!, url: url!);
+  });
 
-    await sut.auth();
+  test('Quando usar a URL certa HTTPClient', () async {
+    await sut!.auth();
 
-    verify(httpClient.request(url: url, method: 'post'));
+    verify(httpClient!.request(url: url, method: 'post'));
   });
 }
