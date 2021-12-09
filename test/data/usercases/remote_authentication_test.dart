@@ -15,24 +15,24 @@ void main() {
   RemoteAuthentication? sut;
   MockIHttpClient? httpClient;
   String? url;
+  AuthenticationParams? params;
 
   setUp(() {
     httpClient = MockIHttpClient();
     url = faker.internet.httpUrl();
     //classe que sempre esta testando = sut
     sut = RemoteAuthentication(httpClient: httpClient!, url: url!);
+    params = AuthenticationParams(
+        email: faker.internet.email(), secret: faker.internet.password());
   });
 
   test('Quando usar a URL certa HTTPClient', () async {
-    final params = AuthenticationParams(
-        email: faker.internet.email(), secret: faker.internet.password());
-
-    await sut!.auth(params);
+    await sut!.auth(params!);
 
     verify(httpClient!.request(
         url: url,
         method: 'post',
-        body: {'email': params.email, 'password': params.secret}));
+        body: {'email': params!.email, 'password': params!.secret}));
   });
 
   test('Quando ocorrer um erro inesperado pelo HttpClient returns 400',
@@ -43,10 +43,7 @@ void main() {
             body: anyNamed('body')))
         .thenThrow(HttpError.badRequest);
 
-    final params = AuthenticationParams(
-        email: faker.internet.email(), secret: faker.internet.password());
-
-    final future = sut!.auth(params);
+    final future = sut!.auth(params!);
 
     expect(future, throwsA(DomainError.unexpected));
   });
