@@ -1,8 +1,8 @@
 # Remore Authentication Use Case
 
 ## Caso de sucesso
-1. sistema valida dados
-2. sistema faz uma requisição para a URL da API de login
+1. 🆗 sistema valida dados 
+2. 🆗 sistema faz uma requisição para a URL da API de login
 3. Sistema valida os dados recebidos da API
 4. Sistema entrega os dados da conta do usuário
 
@@ -10,7 +10,7 @@
 1. Sistema retorna uma mensagem de erro inesperado
 
 ## Exceção - Dados inválidos
-1. Sistema retorna uma mensagem de erro inesperado
+1. 🆗 Sistema retorna uma mensagem de erro inesperado
 
 ## Exceção - Resposta inválida
 1. Sistema retorna uma mensagem de erro inesperado
