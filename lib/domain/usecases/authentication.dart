@@ -9,4 +9,6 @@ class AuthenticationParams {
   final String secret;
 
   AuthenticationParams({required this.email, required this.secret});
+
+  toJson() => {"email": email, "password": secret};
 }
