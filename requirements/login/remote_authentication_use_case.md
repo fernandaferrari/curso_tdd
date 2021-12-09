@@ -19,4 +19,4 @@
 1. 🆗 Sistema retorna uma mensagem de erro inesperado
 
 ## Exceção - Credenciais inválidas
-1. Sistema retorna uma mensagem de erro informando credenciais inválidas
+1. 🆗 Sistema retorna uma mensagem de erro informando credenciais inválidas

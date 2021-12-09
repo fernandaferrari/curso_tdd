@@ -61,16 +61,17 @@ void main() {
     expect(future, throwsA(DomainError.unexpected));
   });
 
-  test('Quando ocorrer um erro inesperado pelo HttpClient returns 500',
+  test(
+      'Quando ocorrer um erro InvalidCredentialsError e HttpClient returns 401',
       () async {
     when(httpClient!.request(
             url: anyNamed('url'),
             method: anyNamed('method'),
             body: anyNamed('body')))
-        .thenThrow(HttpError.serverError);
+        .thenThrow(HttpError.unauthorized);
 
     final future = sut!.auth(params!);
 
-    expect(future, throwsA(DomainError.unexpected));
+    expect(future, throwsA(DomainError.invalidCredentials));
   });
 }
