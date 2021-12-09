@@ -4,9 +4,8 @@
 
 import 'dart:async' as _i3;
 
+import 'package:curso_tdd/data/http/http_client.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
-
-import 'remote_authentication_test.dart' as _i2;
 
 // ignore_for_file: avoid_redundant_argument_values
 // ignore_for_file: avoid_setters_without_getters
@@ -26,9 +25,11 @@ class MockIHttpClient extends _i1.Mock implements _i2.IHttpClient {
   }
 
   @override
-  _i3.Future<void> request({String? url, String? method}) =>
+  _i3.Future<void> request(
+          {String? url, String? method, Map<dynamic, dynamic>? body}) =>
       (super.noSuchMethod(
-          Invocation.method(#request, [], {#url: url, #method: method}),
+          Invocation.method(
+              #request, [], {#url: url, #method: method, #body: body}),
           returnValue: Future<void>.value(),
           returnValueForMissingStub: Future<void>.value()) as _i3.Future<void>);
   @override

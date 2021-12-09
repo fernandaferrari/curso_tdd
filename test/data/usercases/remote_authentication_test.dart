@@ -5,22 +5,9 @@ import 'package:test/test.dart';
 
 import 'remote_authentication_test.mocks.dart';
 
-class RemoteAuthentication {
-  final IHttpClient httpClient;
-  final String url;
-
-  RemoteAuthentication({required this.httpClient, required this.url});
-
-  Future<void> auth() async {
-    await httpClient.request(url: url, method: 'post');
-  }
-}
-
-abstract class IHttpClient {
-  Future<void> request({required String url, required String method});
-}
-
-//class HttpClientMock extends Mock implements IHttpClient {}
+import 'package:curso_tdd/data/usecases/usecase.dart';
+import 'package:curso_tdd/data/http/http_client.dart';
+import 'package:curso_tdd/domain/usecases/usecases.dart';
 
 @GenerateMocks([IHttpClient])
 void main() {
@@ -36,8 +23,14 @@ void main() {
   });
 
   test('Quando usar a URL certa HTTPClient', () async {
-    await sut!.auth();
+    final params = AuthenticationParams(
+        email: faker.internet.email(), secret: faker.internet.password());
 
-    verify(httpClient!.request(url: url, method: 'post'));
+    await sut!.auth(params);
+
+    verify(httpClient!.request(
+        url: url,
+        method: 'post',
+        body: {'email': params.email, 'password': params.secret}));
   });
 }
