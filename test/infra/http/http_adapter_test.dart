@@ -1,30 +1,11 @@
-import 'dart:convert';
-
 import 'package:faker/faker.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart';
 import 'package:mocktail/mocktail.dart';
 
+import 'package:curso_tdd/infra/http/http.dart';
+
 class ClientMock extends Mock implements Client {}
-
-class HttpAdapter {
-  final Client client;
-
-  HttpAdapter(this.client);
-
-  Future<dynamic> request({
-    required String url,
-    required String method,
-    Map? body,
-  }) async {
-    final headers = {
-      'content-type': 'application/json',
-      'accept': 'application/json'
-    };
-    final jsonBody = body != null ? jsonEncode(body) : null;
-    await client.post(Uri.parse(url), headers: headers, body: jsonBody);
-  }
-}
 
 void main() {
   late HttpAdapter sut;
@@ -38,12 +19,20 @@ void main() {
   });
 
   group('post', () {
-    test('Quando client.post tem os valores corretos ...', () async {
-      // when(() => client.post(Uri.parse(url)))
-      //     .thenAnswer((_) async => Response('{}', 200));
+    When mockrequest() => when(() => client.post(Uri.parse('any_value'),
+        body: any(named: 'body'), headers: any(named: 'headers')));
 
-      await sut
-          .request(url: url, method: 'post', body: {'any_key': 'any_value'});
+    void mockResponse(int statusCode,
+        {String body = '{"any_key":"any_value"}'}) {
+      mockrequest().thenAnswer((_) async => Response(body, statusCode));
+    }
+
+    setUp(() {
+      mockResponse(200);
+    });
+
+    test('Quando client.post tem os valores corretos ...', () async {
+      await sut.request(url: url, method: 'post');
 
       verify(() => client.post(Uri.parse(url),
           headers: {
@@ -54,16 +43,39 @@ void main() {
     });
 
     test('Quando client.post está sem body...', () async {
-      // when(() => client.post(Uri.parse(url)))
-      //     .thenAnswer((_) async => Response('{}', 200));
-
       await sut.request(url: url, method: 'post');
 
       verify(() => client.post(any(), headers: any(named: 'headers')));
     });
+
+    test('return data if post returns 200...', () async {
+      final response = await sut.request(url: url, method: 'post');
+
+      expect(response, {'any_key': 'any_value'});
+    });
+
+    test('return null if post returns 200 with no data...', () async {
+      mockResponse(200, body: '');
+
+      final response = await sut.request(url: url, method: 'post');
+
+      expect(response, null);
+    });
+
+    test('return null if post returns 204...', () async {
+      mockResponse(200, body: '');
+
+      final response = await sut.request(url: url, method: 'post');
+
+      expect(response, null);
+    });
+
+    test('return null if post returns 204 with data...', () async {
+      mockResponse(200, body: '');
+
+      final response = await sut.request(url: url, method: 'post');
+
+      expect(response, null);
+    });
   });
-
-  group('get', () {});
-
-  group('put', () {});
 }
