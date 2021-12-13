@@ -5,12 +5,13 @@ import 'package:curso_tdd/domain/usecases/usecases.dart';
 
 import '../http/http.dart';
 
-class RemoteAuthentication {
+class RemoteAuthentication implements IAuthentication {
   final IHttpClient httpClient;
   final String url;
 
   RemoteAuthentication({required this.httpClient, required this.url});
 
+  @override
   Future<AccountEntity> auth(AuthenticationParams params) async {
     final body = RemoteAuthenticationParams.fromDomain(params).toJson();
 

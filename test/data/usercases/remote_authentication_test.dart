@@ -1,29 +1,27 @@
 import 'package:faker/faker.dart';
-import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
-
-import 'remote_authentication_test.mocks.dart';
 
 import 'package:curso_tdd/data/http/http.dart';
 import 'package:curso_tdd/data/usecases/usecase.dart';
 import 'package:curso_tdd/domain/usecases/usecases.dart';
 import 'package:curso_tdd/domain/helpers/helpers.dart';
 
-@GenerateMocks([IHttpClient])
+class IHttpClientMock extends Mock implements IHttpClient {}
+
 void main() {
-  RemoteAuthentication? sut;
-  MockIHttpClient? httpClient;
-  String? url;
-  AuthenticationParams? params;
+  late RemoteAuthentication sut;
+  late IHttpClientMock httpClient;
+  late String url;
+  late AuthenticationParams params;
 
   Map mockValidData() =>
       {'accessToken': faker.guid.guid(), 'name': faker.person.name()};
 
-  PostExpectation mockRequest() => when(httpClient!.request(
-      url: anyNamed('url'),
-      method: anyNamed('method'),
-      body: anyNamed('body')));
+  When mockRequest() => when(() => httpClient.request(
+      url: any(named: 'url'),
+      method: any(named: 'method'),
+      body: any(named: 'body')));
 
   void mockHttpData(Map data) {
     mockRequest().thenAnswer((_) async => data);
@@ -34,29 +32,28 @@ void main() {
   }
 
   setUp(() {
-    httpClient = MockIHttpClient();
+    httpClient = IHttpClientMock();
     url = faker.internet.httpUrl();
-    //classe que sempre esta testando = sut
-    sut = RemoteAuthentication(httpClient: httpClient!, url: url!);
+    sut = RemoteAuthentication(httpClient: httpClient, url: url);
     params = AuthenticationParams(
         email: faker.internet.email(), secret: faker.internet.password());
     mockHttpData(mockValidData());
   });
 
   test('Quando usar a URL certa HTTPClient', () async {
-    await sut!.auth(params!);
+    await sut.auth(params);
 
-    verify(httpClient!.request(
+    verify(() => (httpClient.request(
         url: url,
         method: 'post',
-        body: {'email': params!.email, 'password': params!.secret}));
+        body: {'email': params.email, 'password': params.secret})));
   });
 
   test('Quando ocorrer um erro inesperado pelo HttpClient returns 400',
       () async {
     mockHttpError(HttpError.badRequest);
 
-    final future = sut!.auth(params!);
+    final future = sut.auth(params);
 
     expect(future, throwsA(DomainError.unexpected));
   });
@@ -65,7 +62,7 @@ void main() {
       () async {
     mockHttpError(HttpError.notFound);
 
-    final future = sut!.auth(params!);
+    final future = sut.auth(params);
 
     expect(future, throwsA(DomainError.unexpected));
   });
@@ -75,7 +72,7 @@ void main() {
       () async {
     mockHttpError(HttpError.unauthorized);
 
-    final future = sut!.auth(params!);
+    final future = sut.auth(params);
 
     expect(future, throwsA(DomainError.invalidCredentials));
   });
@@ -85,7 +82,7 @@ void main() {
 
     mockHttpData(validData);
 
-    final account = await sut!.auth(params!);
+    final account = await sut.auth(params);
 
     expect(account.token, validData['accessToken']);
   });
@@ -95,7 +92,7 @@ void main() {
       () async {
     mockHttpData({'invalid_key': 'invalid_value'});
 
-    final future = sut!.auth(params!);
+    final future = sut.auth(params);
 
     expect(future, throwsA(DomainError.unexpected));
   });
