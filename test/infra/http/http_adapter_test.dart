@@ -36,6 +36,10 @@ void main() {
       mockrequest().thenAnswer((_) async => Response(body, statusCode));
     }
 
+    void mockError() {
+      mockrequest().thenThrow(Exception);
+    }
+
     setUp(() {
       mockResponse(200);
     });
@@ -133,6 +137,14 @@ void main() {
       final response = await sut.request(url: url, method: 'post');
 
       expect(response, throwsA(HttpError.notFound));
+    });
+
+    test('return error ServerError if post throws...', () async {
+      mockError();
+
+      final response = await sut.request(url: url, method: 'post');
+
+      expect(response, throwsA(HttpError.serverError));
     });
   });
 }
