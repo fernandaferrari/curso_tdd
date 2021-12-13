@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart';
 import 'package:mocktail/mocktail.dart';
 
+import 'package:curso_tdd/data/http/http_error.dart';
 import 'package:curso_tdd/infra/http/http.dart';
 
 class ClientMock extends Mock implements Client {}
@@ -76,6 +77,14 @@ void main() {
       final response = await sut.request(url: url, method: 'post');
 
       expect(response, null);
+    });
+
+    test('return error 404...', () async {
+      mockResponse(404);
+
+      final response = await sut.request(url: url, method: 'post');
+
+      expect(response, throwsA(HttpError.badRequest));
     });
   });
 }
