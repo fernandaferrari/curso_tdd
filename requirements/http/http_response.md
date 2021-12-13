@@ -1,7 +1,7 @@
 ## HTTP
 
 ## Sucesso
-1. Request com verbo http válido
+1. 🆗 Request com verbo http válido
 2. Passar nos headers o content type json
 3. ok - 200 resposta com dados
 4. No content - 204 e resposta sem dados 
