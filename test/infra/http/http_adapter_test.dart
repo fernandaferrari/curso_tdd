@@ -19,6 +19,14 @@ void main() {
     url = faker.internet.httpUrl();
   });
 
+  group('shared', () {
+    test('Throw ServerError invalid method is provided ...', () async {
+      final future = await sut.request(url: url, method: 'invalid_method');
+
+      expect(future, throwsA(HttpError.serverError));
+    });
+  });
+
   group('post', () {
     When mockrequest() => when(() => client.post(Uri.parse('any_value'),
         body: any(named: 'body'), headers: any(named: 'headers')));
@@ -26,6 +34,10 @@ void main() {
     void mockResponse(int statusCode,
         {String body = '{"any_key":"any_value"}'}) {
       mockrequest().thenAnswer((_) async => Response(body, statusCode));
+    }
+
+    void mockError() {
+      mockrequest().thenThrow(Exception);
     }
 
     setUp(() {
@@ -85,6 +97,54 @@ void main() {
       final response = await sut.request(url: url, method: 'post');
 
       expect(response, throwsA(HttpError.badRequest));
+    });
+
+    test('return error 404 com dados...', () async {
+      mockResponse(404, body: '');
+
+      final response = await sut.request(url: url, method: 'post');
+
+      expect(response, throwsA(HttpError.badRequest));
+    });
+
+    test('return error 500...', () async {
+      mockResponse(500);
+
+      final response = await sut.request(url: url, method: 'post');
+
+      expect(response, throwsA(HttpError.serverError));
+    });
+
+    test('return error 401...', () async {
+      mockResponse(401);
+
+      final response = await sut.request(url: url, method: 'post');
+
+      expect(response, throwsA(HttpError.unauthorized));
+    });
+
+    test('return error 403...', () async {
+      mockResponse(403);
+
+      final response = await sut.request(url: url, method: 'post');
+
+      expect(response, throwsA(HttpError.forbidden));
+    });
+
+    test('return error 404...', () async {
+      mockResponse(404);
+
+      final response = await sut.request(url: url, method: 'post');
+
+      expect(response, throwsA(HttpError.notFound));
+    });
+
+    test('return error ServerError if post throws...', () async {
+      mockError();
+
+      final response = await sut.request(url: url, method: 'post');
+
+      expect(response, throwsA(HttpError.serverError));
     });
   });
 }
