@@ -39,29 +39,37 @@ class LoginPage extends StatelessWidget {
                           icon: const Icon(
                             Icons.email,
                           ),
-                          errorText: data,
+                          errorText: data == '' ? '' : data,
                           //errorText: data,
                         ),
                         keyboardType: TextInputType.emailAddress,
                       );
                     }),
                 Padding(
-                  padding: const EdgeInsets.only(top: 8, bottom: 32),
-                  child: TextFormField(
-                    decoration: const InputDecoration(
-                      labelText: 'Senha',
-                      icon: Icon(
-                        Icons.lock,
-                      ),
-                    ),
-                    obscureText: true,
-                    onChanged: presenter!.validatePassword,
-                  ),
+                  padding: EdgeInsets.only(top: 8, bottom: 32),
+                  child: StreamBuilder<String>(
+                      stream: presenter!.passwordErrorStream,
+                      builder: (context, snapshot) {
+                        return TextFormField(
+                          decoration: InputDecoration(
+                            labelText: 'Senha',
+                            icon: Icon(Icons.lock),
+                            errorText: snapshot.data,
+                          ),
+                          obscureText: true,
+                          onChanged: presenter!.validatePassword,
+                        );
+                      }),
                 ),
-                ElevatedButton(
-                  onPressed: null,
-                  child: Text('Entrar'.toUpperCase()),
-                ),
+                StreamBuilder<bool>(
+                    stream: presenter!.isFormValidStream,
+                    builder: (context, snapshot) {
+                      bool? data = snapshot.data;
+                      return ElevatedButton(
+                        onPressed: data == true ? () {} : null,
+                        child: Text('Entrar'.toUpperCase()),
+                      );
+                    }),
                 TextButton.icon(
                     onPressed: () {},
                     icon: const Icon(Icons.person),

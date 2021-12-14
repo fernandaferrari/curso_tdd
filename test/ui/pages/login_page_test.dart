@@ -11,12 +11,21 @@ class LoginPresenterMock extends Mock implements ILoginPresenter {}
 void main() {
   ILoginPresenter? presenter;
   StreamController<String>? emailErrorController;
+  StreamController<String>? passwordErrorController;
+  StreamController<bool>? isFormValidController;
 
   Future<void> loadPage(WidgetTester tester) async {
     presenter = LoginPresenterMock();
     emailErrorController = StreamController<String>();
+    passwordErrorController = StreamController<String>();
+    isFormValidController = StreamController<bool>();
+
     when(presenter!.emailErrorStream)
         .thenAnswer((_) => emailErrorController!.stream);
+    when(presenter!.isFormValidStream)
+        .thenAnswer((_) => isFormValidController!.stream);
+    when(presenter!.passwordErrorStream)
+        .thenAnswer((_) => passwordErrorController!.stream);
     final loginPage = MaterialApp(
         home: LoginPage(
       presenter,
@@ -26,6 +35,8 @@ void main() {
 
   tearDown(() {
     emailErrorController!.close();
+    isFormValidController!.close();
+    passwordErrorController!.close();
   });
 
   testWidgets('Estado inicial da tela de login ...', (tester) async {
@@ -61,9 +72,35 @@ void main() {
   testWidgets('simulação de erro quando email é invalido ...', (tester) async {
     await loadPage(tester);
 
+    when(presenter!.emailErrorStream)
+        .thenAnswer((_) => emailErrorController!.stream);
     emailErrorController!.add('any error');
     await tester.pump();
 
     expect(find.text('any error'), findsOneWidget);
+  });
+
+  testWidgets('simulação de erro quando password é invalido ...',
+      (tester) async {
+    await loadPage(tester);
+
+    when(presenter!.passwordErrorStream)
+        .thenAnswer((_) => passwordErrorController!.stream);
+
+    passwordErrorController!.add('any error');
+    await tester.pump();
+
+    expect(find.text('any error'), findsOneWidget);
+  });
+
+  testWidgets('Habilitado botão quando valido o form é valido...',
+      (tester) async {
+    await loadPage(tester);
+
+    isFormValidController!.add(true);
+    await tester.pump();
+
+    final button = tester.widget<ElevatedButton>(find.byType(ElevatedButton));
+    expect(button.onPressed, isNotNull);
   });
 }
