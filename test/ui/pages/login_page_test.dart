@@ -16,14 +16,15 @@ void main() {
   StreamController<bool>? isFormValidController;
   StreamController<bool>? isLoadController;
 
-  Future<void> loadPage(WidgetTester tester) async {
-    presenter = LoginPresenterMock();
+  void initStreams() {
     emailErrorController = StreamController<String>();
     passwordErrorController = StreamController<String>();
     mainErrorController = StreamController<String>();
     isFormValidController = StreamController<bool>();
     isLoadController = StreamController<bool>();
+  }
 
+  void mockStreams() {
     when(presenter!.emailErrorStream)
         .thenAnswer((_) => emailErrorController!.stream);
     when(presenter!.isFormValidStream)
@@ -33,6 +34,22 @@ void main() {
     when(presenter!.isLoadStream).thenAnswer((_) => isLoadController!.stream);
     when(presenter!.mainErrorStream)
         .thenAnswer((_) => mainErrorController!.stream);
+  }
+
+  void closeStreams() {
+    emailErrorController!.close();
+    isFormValidController!.close();
+    passwordErrorController!.close();
+    isLoadController!.close();
+    mainErrorController!.close();
+  }
+
+  Future<void> loadPage(WidgetTester tester) async {
+    presenter = LoginPresenterMock();
+
+    initStreams();
+    mockStreams();
+
     final loginPage = MaterialApp(
         home: LoginPage(
       presenter,
@@ -41,11 +58,7 @@ void main() {
   }
 
   tearDown(() {
-    emailErrorController!.close();
-    isFormValidController!.close();
-    passwordErrorController!.close();
-    isLoadController!.close();
-    mainErrorController!.close();
+    closeStreams();
   });
 
   testWidgets('Estado inicial da tela de login ...', (tester) async {
@@ -143,17 +156,6 @@ void main() {
     await tester.pump();
 
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
-  });
-
-  testWidgets('Load não esta presente na tela...', (tester) async {
-    await loadPage(tester);
-
-    isLoadController!.add(true);
-    await tester.pump();
-    isLoadController!.add(false);
-    await tester.pump();
-
-    expect(find.byType(CircularProgressIndicator), findsNothing);
   });
 
   testWidgets('Load não esta presente na tela...', (tester) async {
