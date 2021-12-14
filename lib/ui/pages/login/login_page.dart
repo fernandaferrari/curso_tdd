@@ -66,7 +66,7 @@ class LoginPage extends StatelessWidget {
                     builder: (context, snapshot) {
                       bool? data = snapshot.data;
                       return ElevatedButton(
-                        onPressed: data == true ? () {} : null,
+                        onPressed: data == true ? presenter!.auth : null,
                         child: Text('Entrar'.toUpperCase()),
                       );
                     }),

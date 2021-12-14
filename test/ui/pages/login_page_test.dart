@@ -93,8 +93,7 @@ void main() {
     expect(find.text('any error'), findsOneWidget);
   });
 
-  testWidgets('Habilitado botão quando valido o form é valido...',
-      (tester) async {
+  testWidgets('Habilitado botão quando o form é valido...', (tester) async {
     await loadPage(tester);
 
     isFormValidController!.add(true);
@@ -102,5 +101,28 @@ void main() {
 
     final button = tester.widget<ElevatedButton>(find.byType(ElevatedButton));
     expect(button.onPressed, isNotNull);
+  });
+
+  testWidgets('Desabilitado botão quando o valor do form é false...',
+      (tester) async {
+    await loadPage(tester);
+
+    isFormValidController!.add(false);
+    await tester.pump();
+
+    final button = tester.widget<ElevatedButton>(find.byType(ElevatedButton));
+    expect(button.onPressed, isNull);
+  });
+
+  testWidgets('Direcionado a autenticação quando o form for submetido...',
+      (tester) async {
+    await loadPage(tester);
+
+    isFormValidController!.add(true);
+    await tester.pump();
+    await tester.tap(find.byType(ElevatedButton));
+    await tester.pump();
+
+    verify(presenter!.auth()).called(1);
   });
 }
