@@ -176,4 +176,12 @@ void main() {
 
     expect(find.text('main error'), findsOneWidget);
   });
+
+  testWidgets('Dispose nas streams quando forem fechadas...', (tester) async {
+    await loadPage(tester);
+
+    addTearDown(() {
+      verify(presenter!.dispose()).called(1);
+    });
+  });
 }
