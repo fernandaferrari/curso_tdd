@@ -12,6 +12,7 @@ void main() {
   ILoginPresenter? presenter;
   StreamController<String>? emailErrorController;
   StreamController<String>? passwordErrorController;
+  StreamController<String>? mainErrorController;
   StreamController<bool>? isFormValidController;
   StreamController<bool>? isLoadController;
 
@@ -19,6 +20,7 @@ void main() {
     presenter = LoginPresenterMock();
     emailErrorController = StreamController<String>();
     passwordErrorController = StreamController<String>();
+    mainErrorController = StreamController<String>();
     isFormValidController = StreamController<bool>();
     isLoadController = StreamController<bool>();
 
@@ -29,6 +31,8 @@ void main() {
     when(presenter!.passwordErrorStream)
         .thenAnswer((_) => passwordErrorController!.stream);
     when(presenter!.isLoadStream).thenAnswer((_) => isLoadController!.stream);
+    when(presenter!.mainErrorStream)
+        .thenAnswer((_) => mainErrorController!.stream);
     final loginPage = MaterialApp(
         home: LoginPage(
       presenter,
@@ -40,6 +44,8 @@ void main() {
     emailErrorController!.close();
     isFormValidController!.close();
     passwordErrorController!.close();
+    isLoadController!.close();
+    mainErrorController!.close();
   });
 
   testWidgets('Estado inicial da tela de login ...', (tester) async {
@@ -55,6 +61,7 @@ void main() {
 
     final button = tester.widget<ElevatedButton>(find.byType(ElevatedButton));
     expect(button.onPressed, null);
+    expect(find.byType(CircularProgressIndicator), findsNothing);
   });
 
   testWidgets('Validação do formulario quando os valores estão corretos ...',
@@ -136,5 +143,37 @@ void main() {
     await tester.pump();
 
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
+  });
+
+  testWidgets('Load não esta presente na tela...', (tester) async {
+    await loadPage(tester);
+
+    isLoadController!.add(true);
+    await tester.pump();
+    isLoadController!.add(false);
+    await tester.pump();
+
+    expect(find.byType(CircularProgressIndicator), findsNothing);
+  });
+
+  testWidgets('Load não esta presente na tela...', (tester) async {
+    await loadPage(tester);
+
+    isLoadController!.add(true);
+    await tester.pump();
+    isLoadController!.add(false);
+    await tester.pump();
+
+    expect(find.byType(CircularProgressIndicator), findsNothing);
+  });
+
+  testWidgets('Mensagem de erro quando a autenticação falhar...',
+      (tester) async {
+    await loadPage(tester);
+
+    mainErrorController!.add('main error');
+    await tester.pump();
+
+    expect(find.text('main error'), findsOneWidget);
   });
 }
