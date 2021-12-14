@@ -45,7 +45,7 @@ class App extends StatelessWidget {
         //   style: raisedButtonSyle,
         // ),
       ),
-      home: const LoginPage(),
+      home: LoginPage(null),
     );
   }
 }
