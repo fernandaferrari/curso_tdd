@@ -1,0 +1,19 @@
+import 'package:curso_tdd/ui/pages/login/login_presenter.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+class LoginButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final presenter = Provider.of<ILoginPresenter>(context);
+    return StreamBuilder<bool>(
+        stream: presenter!.isFormValidStream,
+        builder: (context, snapshot) {
+          bool? data = snapshot.data;
+          return ElevatedButton(
+            onPressed: data == true ? presenter!.auth : null,
+            child: Text('Entrar'.toUpperCase()),
+          );
+        });
+  }
+}
