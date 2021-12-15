@@ -69,7 +69,7 @@ void main() {
     expect(emailTextChildren, findsOneWidget);
 
     final passwordTextChildren = find.descendant(
-        of: find.bySemanticsLabel('Senha'), matching: find.byType(Text));
+        of: find.bySemanticsLabel('Password'), matching: find.byType(Text));
     expect(passwordTextChildren, findsOneWidget);
 
     final button = tester.widget<ElevatedButton>(find.byType(ElevatedButton));
@@ -87,7 +87,7 @@ void main() {
     verify(presenter!.validateEmail(email));
 
     final password = faker.internet.password();
-    await tester.enterText(find.bySemanticsLabel('Senha'), password);
+    await tester.enterText(find.bySemanticsLabel('Password'), password);
 
     verify(presenter!.validatePassword(password));
   });

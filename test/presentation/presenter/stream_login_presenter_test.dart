@@ -10,6 +10,7 @@ void main() {
   ValidationMock? validation;
   StreamLoginPresenter? sut;
   late String email;
+  late String password;
 
   When mockValidationCall(String field) => when(() => validation!.validate(
       field: field.isEmpty ? any(named: "field") : field,
@@ -23,6 +24,7 @@ void main() {
     validation = ValidationMock();
     sut = StreamLoginPresenter(validation: validation!);
     email = faker.internet.email();
+    password = faker.internet.password();
     mockValidation();
   });
 
@@ -51,5 +53,33 @@ void main() {
 
     sut!.validateEmail(email);
     sut!.validateEmail(email);
+  });
+
+  test('Validação password quando a senha for correto', () {
+    sut!.validatePassword(password);
+
+    verify(() => validation!.validate(field: 'password', value: password))
+        .called(1);
+  });
+
+  test('Should emit email error if validation fails', () {
+    mockValidation(value: 'error');
+
+    sut!.passwordErrorStream
+        .listen(expectAsync1((error) => expect(error, 'error')));
+    sut!.isFormValidStream
+        .listen(expectAsync1((isValid) => expect(isValid, false)));
+
+    sut!.validateEmail(password);
+    sut!.validateEmail(password);
+  });
+
+  test('Should emit password null if validation succeeds', () {
+    sut!.passwordErrorStream.listen(expectAsync1((error) => expect(error, '')));
+    sut!.isFormValidStream
+        .listen(expectAsync1((isValid) => expect(isValid, false)));
+
+    sut!.validateEmail(password);
+    sut!.validateEmail(password);
   });
 }
