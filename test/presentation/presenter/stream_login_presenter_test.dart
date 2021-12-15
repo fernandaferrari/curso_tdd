@@ -1,3 +1,4 @@
+import 'package:curso_tdd/domain/entities/entities.dart';
 import 'package:curso_tdd/domain/usecases/authentication.dart';
 import 'package:curso_tdd/presentation/presenter/dependencies/dependencies.dart';
 import 'package:curso_tdd/presentation/presenter/presenter.dart';
@@ -22,6 +23,13 @@ void main() {
 
   void mockValidation({String? field, String? value}) {
     mockValidationCall(field ?? '').thenReturn(value ?? '');
+  }
+
+  When mockAuthenticationCall() => when(() => authentication!.auth(any()));
+
+  void mockAuthentication() {
+    mockAuthenticationCall()
+        .thenAnswer((_) async => AccountEntity(faker.guid.guid()));
   }
 
   setUp(() {
@@ -112,7 +120,7 @@ void main() {
     sut!.validatePassword(password);
   });
 
-  test('Should emit password error if validation fails', () async {
+  test('Should call Authentication with correct values', () async {
     sut!.validateEmail(email);
     sut!.validatePassword(password);
 
@@ -120,5 +128,14 @@ void main() {
 
     verify(() => authentication!
         .auth(AuthenticationParams(email: email, secret: password))).called(1);
+  });
+
+  test('Should emit correct events on Authentication sucess', () async {
+    sut!.validateEmail(email);
+    sut!.validatePassword(password);
+
+    expectLater(sut!.isLoadStream, emitsInOrder([false]));
+
+    await sut!.auth();
   });
 }
