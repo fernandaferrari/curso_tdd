@@ -36,7 +36,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   http: 
   provider:
-  # equatable: 1.2.5
+  equatable:
   # get: 3.4.2
   # flutter_secure_storage: 3.3.5
   # localstorage: 3.0.6+9

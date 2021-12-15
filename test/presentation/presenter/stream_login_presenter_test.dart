@@ -1,3 +1,4 @@
+import 'package:curso_tdd/domain/usecases/authentication.dart';
 import 'package:curso_tdd/presentation/presenter/dependencies/dependencies.dart';
 import 'package:curso_tdd/presentation/presenter/presenter.dart';
 import 'package:faker/faker.dart';
@@ -6,8 +7,11 @@ import 'package:mocktail/mocktail.dart';
 
 class ValidationMock extends Mock implements IValidation {}
 
+class AuthenticationMock extends Mock implements IAuthentication {}
+
 void main() {
   ValidationMock? validation;
+  AuthenticationMock? authentication;
   StreamLoginPresenter? sut;
   late String email;
   late String password;
@@ -22,7 +26,9 @@ void main() {
 
   setUp(() {
     validation = ValidationMock();
-    sut = StreamLoginPresenter(validation: validation!);
+    authentication = AuthenticationMock();
+    sut = StreamLoginPresenter(
+        validation: validation!, authentication: authentication!);
     email = faker.internet.email();
     password = faker.internet.password();
     mockValidation();
@@ -104,5 +110,15 @@ void main() {
     sut!.validateEmail(email);
     await Future.delayed(Duration.zero);
     sut!.validatePassword(password);
+  });
+
+  test('Should emit password error if validation fails', () async {
+    sut!.validateEmail(email);
+    sut!.validatePassword(password);
+
+    await sut!.auth();
+
+    verify(() => authentication!
+        .auth(AuthenticationParams(email: email, secret: password))).called(1);
   });
 }
