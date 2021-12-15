@@ -35,7 +35,7 @@ void main() {
   });
 
   test('Should emit email error if validation fails', () {
-    mockValidation(value: 'error');
+    mockValidation(field: 'email', value: 'error');
 
     sut!.emailErrorStream
         .listen(expectAsync1((error) => expect(error, 'error')));
@@ -62,7 +62,7 @@ void main() {
         .called(1);
   });
 
-  test('Should emit email error if validation fails', () {
+  test('Should emit password error if validation fails', () {
     mockValidation(value: 'error');
 
     sut!.passwordErrorStream
@@ -70,8 +70,8 @@ void main() {
     sut!.isFormValidStream
         .listen(expectAsync1((isValid) => expect(isValid, false)));
 
-    sut!.validateEmail(password);
-    sut!.validateEmail(password);
+    sut!.validatePassword(password);
+    sut!.validatePassword(password);
   });
 
   test('Should emit password null if validation succeeds', () {
@@ -79,7 +79,20 @@ void main() {
     sut!.isFormValidStream
         .listen(expectAsync1((isValid) => expect(isValid, false)));
 
-    sut!.validateEmail(password);
-    sut!.validateEmail(password);
+    sut!.validatePassword(password);
+    sut!.validatePassword(password);
+  });
+
+  test('Should emit msg error quando um dos campos não está preenchido', () {
+    mockValidation(field: 'email', value: 'error');
+
+    sut!.emailErrorStream
+        .listen(expectAsync1((error) => expect(error, 'error')));
+    sut!.passwordErrorStream.listen(expectAsync1((error) => expect(error, '')));
+    sut!.isFormValidStream
+        .listen(expectAsync1((isValid) => expect(isValid, false)));
+
+    sut!.validateEmail(email);
+    sut!.validatePassword(password);
   });
 }
