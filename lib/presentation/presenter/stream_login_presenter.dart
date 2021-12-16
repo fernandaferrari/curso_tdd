@@ -18,7 +18,7 @@ class LoginState {
 
 class StreamLoginPresenter {
   final IAuthentication authentication;
-  final IValidation validation;
+  final IValidation? validation;
   final _controller = StreamController<LoginState>.broadcast();
   final _state = LoginState();
 
@@ -44,14 +44,14 @@ class StreamLoginPresenter {
 
   void validateEmail(String email) {
     _state.email = email;
-    _state.emailError = validation.validate(field: 'email', value: email);
+    _state.emailError = validation!.validate(field: 'email', value: email);
     _update();
   }
 
   void validatePassword(String password) {
     _state.password = password;
     _state.passwordError =
-        validation.validate(field: 'password', value: password);
+        validation!.validate(field: 'password', value: password);
     _update();
   }
 
