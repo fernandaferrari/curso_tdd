@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:curso_tdd/domain/helpers/helpers.dart';
 import 'package:curso_tdd/domain/usecases/usecases.dart';
 import 'package:curso_tdd/presentation/presenter/dependencies/dependencies.dart';
+import 'package:curso_tdd/ui/pages/login/login_presenter.dart';
 
 class LoginState {
   String? email;
@@ -13,10 +14,13 @@ class LoginState {
   bool? isLoading = false;
 
   bool get isFormValid =>
-      email != '' && password != '' && emailError == '' && passwordError == '';
+      email != '' &&
+      password != null &&
+      emailError == null &&
+      passwordError == null;
 }
 
-class StreamLoginPresenter {
+class StreamLoginPresenter implements ILoginPresenter {
   final IAuthentication authentication;
   final IValidation? validation;
   final _controller = StreamController<LoginState>.broadcast();
@@ -25,14 +29,19 @@ class StreamLoginPresenter {
   StreamLoginPresenter(
       {required this.validation, required this.authentication});
 
+  @override
   Stream<String?> get emailErrorStream =>
       _controller.stream.map((state) => state.emailError).distinct();
+  @override
   Stream<String?> get passwordErrorStream =>
       _controller.stream.map((state) => state.passwordError).distinct();
+  @override
   Stream<bool> get isFormValidStream =>
       _controller.stream.map((state) => state.isFormValid).distinct();
+  @override
   Stream<bool?> get isLoadStream =>
       _controller.stream.map((state) => state.isLoading).distinct();
+  @override
   Stream<String?> get mainErrorStream =>
       _controller.stream.map((state) => state.mainError).distinct();
 
@@ -42,12 +51,14 @@ class StreamLoginPresenter {
     }
   }
 
+  @override
   void validateEmail(String email) {
     _state.email = email;
     _state.emailError = validation!.validate(field: 'email', value: email);
     _update();
   }
 
+  @override
   void validatePassword(String password) {
     _state.password = password;
     _state.passwordError =
@@ -55,6 +66,7 @@ class StreamLoginPresenter {
     _update();
   }
 
+  @override
   Future<void>? auth() async {
     _state.isLoading = true;
     _update();
@@ -70,6 +82,7 @@ class StreamLoginPresenter {
     _update();
   }
 
+  @override
   void dispose() {
     _controller.close();
   }

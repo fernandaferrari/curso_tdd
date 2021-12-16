@@ -6,7 +6,7 @@ class EmailInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final presenter = Provider.of<ILoginPresenter>(context);
-    return StreamBuilder<String>(
+    return StreamBuilder<String?>(
         stream: presenter.emailErrorStream,
         builder: (context, snapshot) {
           String? data = snapshot.data;

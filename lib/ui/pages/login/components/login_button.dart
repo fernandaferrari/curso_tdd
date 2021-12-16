@@ -6,7 +6,7 @@ class LoginButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final presenter = Provider.of<ILoginPresenter>(context);
-    return StreamBuilder<bool>(
+    return StreamBuilder<bool?>(
         stream: presenter.isFormValidStream,
         builder: (context, snapshot) {
           bool? data = snapshot.data;

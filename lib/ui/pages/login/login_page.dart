@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
-  final ILoginPresenter? presenter;
+  final ILoginPresenter presenter;
 
   LoginPage(this.presenter);
 
@@ -17,23 +17,23 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void dispose() {
     super.dispose();
-    widget.presenter!.dispose();
+    widget.presenter.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Builder(builder: (context) {
-        widget.presenter!.isLoadStream!.listen((isLoading) {
-          if (isLoading) {
+        widget.presenter.isLoadStream.listen((isLoading) {
+          if (isLoading!) {
             showLoading(context);
           } else {
             hideLoading(context);
           }
         });
 
-        widget.presenter!.mainErrorStream!.listen((mainError) {
-          if (mainError.isNotEmpty) {
+        widget.presenter.mainErrorStream.listen((mainError) {
+          if (mainError != null) {
             showErrorMessage(context, mainError);
           }
         });
@@ -60,7 +60,7 @@ class _LoginPageState extends State<LoginPage> {
                   children: [
                     EmailInput(),
                     Padding(
-                      padding: EdgeInsets.only(top: 8, bottom: 32),
+                      padding: const EdgeInsets.only(top: 8, bottom: 32),
                       child: PasswordInput(),
                     ),
                     LoginButton(),
