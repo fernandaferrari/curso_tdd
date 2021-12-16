@@ -1,28 +1,7 @@
-import 'dart:ffi';
-import 'dart:math';
-
-import 'package:curso_tdd/presentation/presenter/dependencies/validation.dart';
 import 'package:curso_tdd/validation/dependencies/field_validation.dart';
+import 'package:curso_tdd/validation/validators/validators.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-
-class ValidationComposite implements IValidation {
-  final List<FieldValidation> validations;
-
-  ValidationComposite(this.validations);
-
-  @override
-  String? validate({required String? field, required String? value}) {
-    String? error;
-    for (final validation in validations.where((v) => v.field == field)) {
-      error = validation.validate(value!);
-      if (error?.isNotEmpty == true) {
-        return error;
-      }
-    }
-    return error!.isEmpty ? null : error;
-  }
-}
 
 class FieldValidationMock extends Mock implements FieldValidation {}
 
@@ -55,7 +34,8 @@ void main() {
     expect(error, null);
   });
 
-  test('teste para que retorne o primeiro erro encontrado dentre as validações',
+  test(
+      'teste para que retorne o primeiro erro encontrado dentre as validações do field correto',
       () {
     mockValidator1('error_1');
     mockValidator2('error_2');

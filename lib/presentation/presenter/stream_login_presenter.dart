@@ -25,16 +25,16 @@ class StreamLoginPresenter {
   StreamLoginPresenter(
       {required this.validation, required this.authentication});
 
-  Stream<String> get emailErrorStream =>
-      _controller.stream.map((state) => state.emailError ?? '').distinct();
-  Stream<String> get passwordErrorStream =>
-      _controller.stream.map((state) => state.passwordError ?? '').distinct();
+  Stream<String?> get emailErrorStream =>
+      _controller.stream.map((state) => state.emailError).distinct();
+  Stream<String?> get passwordErrorStream =>
+      _controller.stream.map((state) => state.passwordError).distinct();
   Stream<bool> get isFormValidStream =>
       _controller.stream.map((state) => state.isFormValid).distinct();
-  Stream<bool> get isLoadStream =>
-      _controller.stream.map((state) => state.isLoading!).distinct();
-  Stream<String> get mainErrorStream =>
-      _controller.stream.map((state) => state.mainError ?? '').distinct();
+  Stream<bool?> get isLoadStream =>
+      _controller.stream.map((state) => state.isLoading).distinct();
+  Stream<String?> get mainErrorStream =>
+      _controller.stream.map((state) => state.mainError).distinct();
 
   void _update() {
     if (!_controller.isClosed) {
@@ -63,6 +63,7 @@ class StreamLoginPresenter {
           AuthenticationParams(email: _state.email!, secret: _state.password!));
     } on DomainError catch (error) {
       _state.emailError = error.description;
+      _update();
     }
 
     _state.isLoading = false;
