@@ -2,7 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 abstract class FieldValidation {
   String get field;
-  String validate(String value);
+  String? validate(String value);
 }
 
 class RequiredFieldValidation implements FieldValidation {
@@ -12,8 +12,8 @@ class RequiredFieldValidation implements FieldValidation {
   RequiredFieldValidation(this.field);
 
   @override
-  String validate(String value) {
-    return null.toString();
+  String? validate(String value) {
+    return value.isEmpty ? 'Campo obrigatório.' : null;
   }
 }
 
@@ -25,8 +25,10 @@ void main() {
   });
 
   test('should return null if value is not empty', () {
-    final error = sut.validate('any_value');
+    expect(sut.validate('any_value'), null);
+  });
 
-    expect(error, null.toString());
+  test('should return error if value is not empty', () {
+    expect(sut.validate(''), 'Campo obrigatório.');
   });
 }
