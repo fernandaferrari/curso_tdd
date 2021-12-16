@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:curso_tdd/domain/helpers/helpers.dart';
 import 'package:curso_tdd/domain/usecases/usecases.dart';
 import 'package:curso_tdd/presentation/presenter/dependencies/dependencies.dart';
 
@@ -8,6 +9,7 @@ class LoginState {
   String? password;
   String? emailError;
   String? passwordError;
+  String? mainError;
   bool? isLoading = false;
 
   bool get isFormValid =>
@@ -31,8 +33,14 @@ class StreamLoginPresenter {
       _controller.stream.map((state) => state.isFormValid).distinct();
   Stream<bool> get isLoadStream =>
       _controller.stream.map((state) => state.isLoading!).distinct();
+  Stream<String> get mainErrorStream =>
+      _controller.stream.map((state) => state.mainError ?? '').distinct();
 
-  void _update() => _controller.add(_state);
+  void _update() {
+    if (!_controller.isClosed) {
+      _controller.add(_state);
+    }
+  }
 
   void validateEmail(String email) {
     _state.email = email;
@@ -50,9 +58,18 @@ class StreamLoginPresenter {
   Future<void>? auth() async {
     _state.isLoading = true;
     _update();
-    authentication.auth(
-        AuthenticationParams(email: _state.email!, secret: _state.password!));
+    try {
+      authentication.auth(
+          AuthenticationParams(email: _state.email!, secret: _state.password!));
+    } on DomainError catch (error) {
+      _state.emailError = error.description;
+    }
+
     _state.isLoading = false;
     _update();
+  }
+
+  void dispose() {
+    _controller.close();
   }
 }
