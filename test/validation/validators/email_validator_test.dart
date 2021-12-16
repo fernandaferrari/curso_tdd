@@ -1,33 +1,28 @@
-import 'package:curso_tdd/validation/dependencies/field_validation.dart';
+import 'package:curso_tdd/validation/validators/validators.dart';
+import 'package:faker/faker.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-class EmailValidator implements FieldValidation {
-  @override
-  final String field;
-
-  EmailValidator(this.field);
-
-  @override
-  String? validate(String? value) {
-    return null;
-  }
-}
 
 void main() {
   late EmailValidator sut;
+  String? email;
   setUp(() {
     sut = EmailValidator('any_field');
+    email = faker.internet.email();
   });
 
   test('Should return null if email is empty', () {
-    final error = sut.validate('');
-
-    expect(error, null);
+    expect(sut.validate(''), null);
   });
 
   test('Should return null if email is null', () {
-    final error = sut.validate(null);
+    expect(sut.validate(null), null);
+  });
 
-    expect(error, null);
+  test('Should return null if email isValid', () {
+    expect(sut.validate(email), null);
+  });
+
+  test('Should return error if email isValid', () {
+    expect(sut.validate('fernanda.ferrari'), 'Campo inválido.');
   });
 }
