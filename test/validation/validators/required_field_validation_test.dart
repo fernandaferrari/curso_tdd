@@ -2,7 +2,7 @@ import 'package:curso_tdd/validation/validators/validators.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  late RequiredFieldValidation sut;
+  RequiredFieldValidation sut;
 
   setUp(() {
     sut = RequiredFieldValidation('any_value');

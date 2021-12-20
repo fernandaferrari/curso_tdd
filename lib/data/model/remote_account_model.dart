@@ -2,7 +2,7 @@ import '../http/http.dart';
 import '../../domain/entities/entities.dart';
 
 class RemoteAccountModel {
-  final String? accessToken;
+  final String accessToken;
 
   RemoteAccountModel(this.accessToken);
 
@@ -13,5 +13,5 @@ class RemoteAccountModel {
     return RemoteAccountModel(json['accessToken']);
   }
 
-  AccountEntity toEntity() => AccountEntity(accessToken!);
+  AccountEntity toEntity() => AccountEntity(accessToken);
 }

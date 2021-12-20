@@ -25,7 +25,7 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       body: Builder(builder: (context) {
         widget.presenter.isLoadStream.listen((isLoading) {
-          if (isLoading!) {
+          if (isLoading) {
             showLoading(context);
           } else {
             hideLoading(context);
@@ -42,7 +42,7 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const LoginHeader(),
+            LoginHeader(),
             const SizedBox(
               height: 32,
             ),
@@ -64,7 +64,7 @@ class _LoginPageState extends State<LoginPage> {
                       child: PasswordInput(),
                     ),
                     LoginButton(),
-                    TextButton.icon(
+                    FlatButton.icon(
                         onPressed: () {},
                         icon: const Icon(Icons.person),
                         label: const Text('Registrar')),
