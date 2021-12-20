@@ -4,7 +4,7 @@ import 'package:curso_tdd/domain/helpers/helpers.dart';
 import 'package:curso_tdd/domain/usecases/usecases.dart';
 import 'package:meta/meta.dart';
 
-import '../http/http.dart';
+import '../../http/http.dart';
 
 class RemoteAuthentication implements IAuthentication {
   final IHttpClient httpClient;
