@@ -1,4 +1,3 @@
-import 'package:curso_tdd/data/usecases/usecase.dart';
 import 'package:curso_tdd/main/builders/validation_builder.dart';
 import 'package:curso_tdd/presentation/presenter/dependencies/validation.dart';
 import 'package:curso_tdd/validation/dependencies/dependencies.dart';

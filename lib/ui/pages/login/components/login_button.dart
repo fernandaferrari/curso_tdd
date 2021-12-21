@@ -9,7 +9,6 @@ class LoginButton extends StatelessWidget {
     return StreamBuilder<bool>(
         stream: presenter.isFormValidStream,
         builder: (context, snapshot) {
-          bool data = snapshot.data;
           return RaisedButton(
             onPressed: snapshot.data == true ? presenter.auth : null,
             child: Text('Entrar'.toUpperCase()),

@@ -9,6 +9,7 @@ import '../../domain/usecases/usecases.dart';
 class GetxLoginPresenter extends GetxController implements ILoginPresenter {
   final IValidation validation;
   final IAuthentication authentication;
+  final ISaveCurrentAccount saveCurrentAccount;
 
   String _email;
   String _password;
@@ -27,10 +28,10 @@ class GetxLoginPresenter extends GetxController implements ILoginPresenter {
   Stream<bool> get isFormValidStream => _isFormValid.stream;
   Stream<bool> get isLoadStream => _isLoading.stream;
 
-  GetxLoginPresenter({
-    @required this.validation,
-    @required this.authentication,
-  });
+  GetxLoginPresenter(
+      {@required this.validation,
+      @required this.authentication,
+      @required this.saveCurrentAccount});
 
   void validateEmail(String email) {
     _email = email;
@@ -55,8 +56,9 @@ class GetxLoginPresenter extends GetxController implements ILoginPresenter {
   Future<void> auth() async {
     try {
       _isLoading.value = true;
-      await authentication
+      final account = await authentication
           .auth(AuthenticationParams(email: _email, secret: _password));
+      await saveCurrentAccount.save(account);
     } on DomainError catch (error) {
       _mainError.value = error.description;
       _isLoading.value = false;
