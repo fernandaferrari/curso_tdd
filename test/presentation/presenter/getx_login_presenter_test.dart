@@ -142,6 +142,16 @@ void main() {
         .called(1);
   });
 
+  test('Should change page on success', () async {
+    sut.validateEmail(email);
+    sut.validatePassword(password);
+
+    sut.navigateToStream
+        .listen(expectAsync1((page) => expect(page, '/surveys')));
+
+    await sut.auth();
+  });
+
   test('Should call SaveCurrentAccount with correct value', () async {
     sut.validateEmail(email);
     sut.validatePassword(password);
