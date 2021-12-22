@@ -1,5 +1,5 @@
 import 'package:curso_tdd/data/cache/save_secure_cache_storage.dart';
-import 'package:curso_tdd/data/usecases/save_current_account/save_current_account.dart';
+import 'package:curso_tdd/data/usercases/save_current_account/save_current_account.dart';
 import 'package:curso_tdd/domain/entities/account_entity.dart';
 import 'package:curso_tdd/domain/helpers/helpers.dart';
 import 'package:faker/faker.dart';

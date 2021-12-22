@@ -1,9 +1,9 @@
+import 'package:curso_tdd/data/usercases/authentication/authentication.dart';
 import 'package:faker/faker.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 
 import 'package:curso_tdd/data/http/http.dart';
-import 'package:curso_tdd/data/usecases/usecase.dart';
 import 'package:curso_tdd/domain/usecases/usecases.dart';
 import 'package:curso_tdd/domain/helpers/helpers.dart';
 
