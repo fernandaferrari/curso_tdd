@@ -1,4 +1,5 @@
 import 'package:curso_tdd/main/factories/factories.dart';
+import 'package:curso_tdd/main/factories/pages/splash/splash.dart';
 import 'package:curso_tdd/ui/components/components.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,10 +17,15 @@ class App extends StatelessWidget {
       title: 'TDD',
       debugShowCheckedModeBanner: false,
       theme: appTheme(),
-      initialRoute: '/login',
+      initialRoute: '/',
       getPages: [
-        GetPage(name: '/login', page: makeLoginPage),
-        GetPage(name: '/surveys', page: () => Scaffold(body: Text('Enquetes')))
+        GetPage(name: '/', page: makeSplashPage, transition: Transition.fade),
+        GetPage(
+            name: '/login', page: makeLoginPage, transition: Transition.fadeIn),
+        GetPage(
+            name: '/surveys',
+            page: () => Scaffold(body: Text('Enquetes')),
+            transition: Transition.fadeIn)
       ],
     );
   }
