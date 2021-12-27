@@ -1,4 +1,3 @@
-import 'package:curso_tdd/data/usercases/authentication/authentication.dart';
 import 'package:curso_tdd/data/usercases/usecase.dart';
 import 'package:curso_tdd/domain/helpers/helpers.dart';
 import 'package:faker/faker.dart';
@@ -25,6 +24,13 @@ void main() {
     mockRequest().thenThrow(error);
   }
 
+  Map mockValidData() =>
+      {'accessToken': faker.guid.guid(), 'name': faker.person.name()};
+
+  void mockHttpData(Map data) {
+    mockRequest().thenAnswer((_) async => data);
+  }
+
   setUp(() {
     httpClient = IHttpClientMock();
     url = faker.internet.httpUrl();
@@ -35,6 +41,7 @@ void main() {
       name: faker.person.name(),
       passwordConfirmation: faker.internet.password(),
     );
+    mockHttpData(mockValidData());
   });
 
   test('Quando usar a URL certa HTTPClient', () async {
@@ -82,5 +89,15 @@ void main() {
     final future = sut.add(params);
 
     expect(future, throwsA(DomainError.emailInUse));
+  });
+
+  test('Quando retornar Addaccount e HttpClient returns 200', () async {
+    final validData = mockValidData();
+
+    mockHttpData(validData);
+
+    final account = await sut.add(params);
+
+    expect(account.token, validData['accessToken']);
   });
 }

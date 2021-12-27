@@ -1,18 +1,22 @@
 import 'package:curso_tdd/data/http/http.dart';
+import 'package:curso_tdd/data/model/model.dart';
+import 'package:curso_tdd/domain/entities/entities.dart';
 import 'package:curso_tdd/domain/helpers/helpers.dart';
 import 'package:curso_tdd/domain/usecases/usecases.dart';
 import 'package:meta/meta.dart';
 
-class RemoteAddAccount {
+class RemoteAddAccount implements AddAccount {
   final IHttpClient httpClient;
   final String url;
 
   RemoteAddAccount({@required this.httpClient, @required this.url});
 
-  Future<void> add(AddAccountParams params) async {
+  Future<AccountEntity> add(AddAccountParams params) async {
     final body = RemoteAddAccountParams.fromDomain(params).toJson();
     try {
-      await httpClient.request(url: url, method: 'post', body: body);
+      final httpResponse =
+          await httpClient.request(url: url, method: 'post', body: body);
+      return RemoteAccountModel.fromJson(httpResponse).toEntity();
     } on HttpError catch (error) {
       throw error == HttpError.forbidden
           ? DomainError.emailInUse
