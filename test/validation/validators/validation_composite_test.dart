@@ -1,3 +1,4 @@
+import 'package:curso_tdd/presentation/presenter/dependencies/validation.dart';
 import 'package:curso_tdd/validation/dependencies/field_validation.dart';
 import 'package:curso_tdd/validation/validators/validators.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -10,11 +11,11 @@ void main() {
   FieldValidationMock validator1;
   FieldValidationMock validator2;
 
-  void mockValidator1(String error) {
+  void mockValidator1(ValidationError error) {
     when(validator1.validate('any_value')).thenReturn(error);
   }
 
-  void mockValidator2(String error) {
+  void mockValidator2(ValidationError error) {
     when(validator2.validate('any_value')).thenReturn(error);
   }
 
@@ -29,7 +30,6 @@ void main() {
     sut = ValidationComposite([validator1, validator2]);
   });
   test('Should return null if all validations return null or empty', () {
-    mockValidator2('');
     final error = sut.validate(field: 'any_field', value: 'any_value');
     expect(error, null);
   });
@@ -37,10 +37,10 @@ void main() {
   test(
       'teste para que retorne o primeiro erro encontrado dentre as validações do field correto',
       () {
-    mockValidator1('error_1');
-    mockValidator2('error_2');
+    mockValidator1(ValidationError.invalidField);
+    mockValidator2(ValidationError.requiredField);
 
     final error = sut.validate(field: 'any_field', value: 'any_value');
-    expect(error, 'error_2');
+    expect(error, ValidationError.requiredField);
   });
 }

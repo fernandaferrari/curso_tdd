@@ -1,4 +1,5 @@
 import 'package:curso_tdd/ui/components/components.dart';
+import 'package:curso_tdd/ui/helpers/errors/errors.dart';
 import 'package:curso_tdd/ui/pages/login/components/components.dart';
 import 'package:curso_tdd/ui/pages/pages.dart';
 import 'package:flutter/material.dart';
@@ -31,7 +32,7 @@ class LoginPage extends StatelessWidget {
 
         presenter.mainErrorStream.listen((mainError) {
           if (mainError != null) {
-            showErrorMessage(context, mainError);
+            showErrorMessage(context, mainError.description);
           }
         });
 

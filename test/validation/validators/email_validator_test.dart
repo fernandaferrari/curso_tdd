@@ -1,3 +1,4 @@
+import 'package:curso_tdd/presentation/presenter/dependencies/validation.dart';
 import 'package:curso_tdd/validation/validators/validators.dart';
 import 'package:faker/faker.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -23,6 +24,6 @@ void main() {
   });
 
   test('Should return error if email isValid', () {
-    expect(sut.validate('fernanda.ferrari'), 'Campo inválido.');
+    expect(sut.validate('fernanda.ferrari'), ValidationError.invalidField);
   });
 }
