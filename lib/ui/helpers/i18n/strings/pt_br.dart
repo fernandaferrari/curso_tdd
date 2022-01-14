@@ -24,4 +24,10 @@ class PtBr implements Translations {
 
   @override
   String get msgInvalidCredentials => 'Credenciais inválidas.';
+
+  @override
+  String get confirmPassword => 'Confirmar senha.';
+
+  @override
+  String get name => 'Nome';
 }

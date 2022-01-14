@@ -102,7 +102,7 @@ void main() {
   });
 
   test(
-      'Quando retornar throw UnexpectedError e HttpClient returns 200 quando a dados invalidos',
+      'retorna throw UnexpectedError e HttpClient returns 200 quando a dados invalidos',
       () async {
     mockHttpData({'invalid_key': 'invalid_value'});
 
