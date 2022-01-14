@@ -6,7 +6,7 @@ class ConfirmPasswordInput extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       decoration: InputDecoration(
-        labelText: 'Confirm Password.',
+        labelText: R.strings.confirmPassword,
         icon: Icon(Icons.lock),
       ),
       obscureText: true,

@@ -1,3 +1,4 @@
+import 'package:curso_tdd/ui/helpers/helpers.dart';
 import 'package:flutter/material.dart';
 
 class EmailInput extends StatelessWidget {
@@ -5,7 +6,7 @@ class EmailInput extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       decoration: InputDecoration(
-        labelText: 'E-mail',
+        labelText: R.strings.email,
         icon: const Icon(
           Icons.email,
         ),

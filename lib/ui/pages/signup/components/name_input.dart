@@ -6,7 +6,7 @@ class NameInput extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
         decoration: InputDecoration(
-          labelText: 'Name',
+          labelText: R.strings.name,
           icon: const Icon(
             Icons.person,
           ),

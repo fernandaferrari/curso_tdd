@@ -15,7 +15,7 @@ void main() {
     await loadPage(tester);
 
     final nameTextChildren = find.descendant(
-        of: find.bySemanticsLabel('Name'), matching: find.byType(Text));
+        of: find.bySemanticsLabel('Nome'), matching: find.byType(Text));
     expect(nameTextChildren, findsOneWidget);
 
     final emailTextChildren = find.descendant(
@@ -23,11 +23,11 @@ void main() {
     expect(emailTextChildren, findsOneWidget);
 
     final passwordTextChildren = find.descendant(
-        of: find.bySemanticsLabel('Password'), matching: find.byType(Text));
+        of: find.bySemanticsLabel('Senha'), matching: find.byType(Text));
     expect(passwordTextChildren, findsOneWidget);
 
     final passwordConfirmationTextChildren = find.descendant(
-        of: find.bySemanticsLabel('Confirm password.'),
+        of: find.bySemanticsLabel('Confirmar senha.'),
         matching: find.byType(Text));
     expect(passwordConfirmationTextChildren, findsOneWidget);
 
