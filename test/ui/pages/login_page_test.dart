@@ -224,4 +224,16 @@ void main() {
     expect(Get.currentRoute, '/any_route');
     expect(find.text('fake page'), findsOneWidget);
   });
+
+  testWidgets('shpuld call goToSingUp on link click..', (tester) async {
+    await loadPage(tester);
+
+    final button = find.text('Adicionar conta');
+
+    await tester.ensureVisible(button);
+    await tester.tap(button);
+    await tester.pump();
+
+    verify(presenter.goToSingUp()).called(1);
+  });
 }

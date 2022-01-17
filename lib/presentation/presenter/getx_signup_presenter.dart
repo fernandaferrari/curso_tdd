@@ -103,7 +103,8 @@ class GetxSignUpPresenter extends GetxController implements SignUpPresenter {
           name: _name,
           passwordConfirmation: _confirmPassword));
 
-      saveCurrentAccount.save(account);
+      await saveCurrentAccount.save(account);
+      _navigateTo.value = '/surveys';
     } on DomainError catch (error) {
       switch (error) {
         case DomainError.invalidCredentials:
@@ -114,5 +115,10 @@ class GetxSignUpPresenter extends GetxController implements SignUpPresenter {
       }
       _isLoading.value = false;
     }
+  }
+
+  @override
+  void goToLogin() {
+    _navigateTo.value = '/login';
   }
 }

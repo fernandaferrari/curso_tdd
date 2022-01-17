@@ -1,5 +1,6 @@
 import 'package:curso_tdd/ui/components/components.dart';
 import 'package:curso_tdd/ui/helpers/errors/errors.dart';
+import 'package:curso_tdd/ui/helpers/helpers.dart';
 import 'package:curso_tdd/ui/pages/login/components/components.dart';
 import 'package:curso_tdd/ui/pages/pages.dart';
 import 'package:flutter/material.dart';
@@ -71,9 +72,9 @@ class LoginPage extends StatelessWidget {
                       ),
                       LoginButton(),
                       FlatButton.icon(
-                          onPressed: () {},
+                          onPressed: presenter.goToSingUp,
                           icon: const Icon(Icons.person),
-                          label: const Text('Registrar')),
+                          label: Text(R.strings.addAccount)),
                     ],
                   )),
                 ),
