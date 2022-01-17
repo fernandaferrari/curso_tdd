@@ -4,6 +4,7 @@ import 'package:curso_tdd/ui/components/components.dart';
 import 'package:curso_tdd/ui/helpers/helpers.dart';
 import 'package:curso_tdd/ui/pages/signup/components/components.dart';
 import 'package:curso_tdd/ui/pages/signup/signup_presenter.dart';
+import 'package:get/get.dart';
 import 'package:meta/meta.dart';
 import 'package:provider/provider.dart';
 
@@ -36,6 +37,12 @@ class SignUpPage extends StatelessWidget {
         presenter.mainErrorStream.listen((mainError) {
           if (mainError != null) {
             showErrorMessage(context, mainError.description);
+          }
+        });
+
+        presenter.navigateToStream.listen((page) {
+          if (page?.isNotEmpty == true) {
+            Get.offAllNamed(page);
           }
         });
 
