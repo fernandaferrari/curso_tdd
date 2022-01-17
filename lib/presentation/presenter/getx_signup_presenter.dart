@@ -1,11 +1,14 @@
-import 'package:curso_tdd/presentation/presenter/dependencies/dependencies.dart';
-import 'package:curso_tdd/ui/helpers/errors/ui_error.dart';
-import 'package:curso_tdd/ui/pages/pages.dart';
 import 'package:get/state_manager.dart';
 import 'package:meta/meta.dart';
 
+import 'package:curso_tdd/domain/usecases/usecases.dart';
+import 'package:curso_tdd/presentation/presenter/dependencies/dependencies.dart';
+import 'package:curso_tdd/ui/helpers/errors/ui_error.dart';
+import 'package:curso_tdd/ui/pages/pages.dart';
+
 class GetxSignUpPresenter extends GetxController implements SignUpPresenter {
   final IValidation validation;
+  final AddAccount addAccount;
 
   String _email;
   String _password;
@@ -21,7 +24,10 @@ class GetxSignUpPresenter extends GetxController implements SignUpPresenter {
   var _isFormValid = false.obs;
   var _isLoading = false.obs;
 
-  GetxSignUpPresenter({@required this.validation});
+  GetxSignUpPresenter({
+    @required this.validation,
+    @required this.addAccount,
+  });
 
   Stream<UIError> get emailErrorStream => _emailError.stream;
   Stream<UIError> get passwordErrorStream => _passwordError.stream;
@@ -46,10 +52,10 @@ class GetxSignUpPresenter extends GetxController implements SignUpPresenter {
   }
 
   @override
-  void validateConfirmPassword(String password) {
-    _confirmPassword = password;
+  void validateConfirmPassword(String confirmPassword) {
+    _confirmPassword = confirmPassword;
     _confirmPasswordError.value =
-        _validateField(field: 'confirm_password', value: password);
+        _validateField(field: 'confirm_password', value: confirmPassword);
     _validateForm();
   }
 
@@ -80,13 +86,16 @@ class GetxSignUpPresenter extends GetxController implements SignUpPresenter {
         _password != null &&
         _nameError.value == null &&
         _name != null &&
-        _confirmPasswordError == null &&
+        _confirmPasswordError.value == null &&
         _confirmPassword != null;
   }
 
   @override
-  Future<void> signup() {
-    // TODO: implement signup
-    throw UnimplementedError();
+  Future<void> signup() async {
+    await addAccount.add(AddAccountParams(
+        email: _email,
+        password: _password,
+        name: _name,
+        passwordConfirmation: _confirmPassword));
   }
 }
