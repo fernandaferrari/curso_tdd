@@ -9,6 +9,7 @@ import 'package:curso_tdd/ui/pages/pages.dart';
 class GetxSignUpPresenter extends GetxController implements SignUpPresenter {
   final IValidation validation;
   final AddAccount addAccount;
+  final ISaveCurrentAccount saveCurrentAccount;
 
   String _email;
   String _password;
@@ -27,6 +28,7 @@ class GetxSignUpPresenter extends GetxController implements SignUpPresenter {
   GetxSignUpPresenter({
     @required this.validation,
     @required this.addAccount,
+    @required this.saveCurrentAccount,
   });
 
   Stream<UIError> get emailErrorStream => _emailError.stream;
@@ -92,10 +94,12 @@ class GetxSignUpPresenter extends GetxController implements SignUpPresenter {
 
   @override
   Future<void> signup() async {
-    await addAccount.add(AddAccountParams(
+    final account = await addAccount.add(AddAccountParams(
         email: _email,
         password: _password,
         name: _name,
         passwordConfirmation: _confirmPassword));
+
+    saveCurrentAccount.save(account);
   }
 }

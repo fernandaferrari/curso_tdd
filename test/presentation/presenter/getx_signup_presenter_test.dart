@@ -17,6 +17,7 @@ void main() {
   GetxSignUpPresenter sut;
   ValidationSpy validation;
   AddAccountSpy addAccount;
+  SaveCurrentAccountSpy saveCurrentAccount;
   String name;
   String email;
   String password;
@@ -40,7 +41,11 @@ void main() {
   setUp(() {
     addAccount = AddAccountSpy();
     validation = ValidationSpy();
-    sut = GetxSignUpPresenter(validation: validation, addAccount: addAccount);
+    saveCurrentAccount = SaveCurrentAccountSpy();
+    sut = GetxSignUpPresenter(
+        validation: validation,
+        addAccount: addAccount,
+        saveCurrentAccount: saveCurrentAccount);
     email = faker.internet.email();
     name = faker.person.name();
     password = faker.internet.password();
@@ -229,5 +234,14 @@ void main() {
             name: name,
             passwordConfirmation: confirmPassword)))
         .called(1);
+  });
+
+  test('Should call SaveCurrentAccount with correct value', () async {
+    sut.validateEmail(email);
+    sut.validatePassword(password);
+
+    await sut.signup();
+
+    verify(saveCurrentAccount.save(AccountEntity(token: token))).called(1);
   });
 }
