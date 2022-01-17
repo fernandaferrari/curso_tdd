@@ -17,6 +17,7 @@ void main() {
   StreamController<UIError> passwordErrorController;
   StreamController<UIError> nameErrorController;
   StreamController<UIError> passwordConfirmErrorController;
+  StreamController<UIError> mainErrorController;
   StreamController<bool> isFormValidController;
   StreamController<bool> isLoadController;
 
@@ -27,6 +28,7 @@ void main() {
     passwordConfirmErrorController = StreamController<UIError>();
     isFormValidController = StreamController<bool>();
     isLoadController = StreamController<bool>();
+    mainErrorController = StreamController<UIError>();
   }
 
   void mockStreams() {
@@ -41,6 +43,8 @@ void main() {
     when(presenter.isFormValidStream)
         .thenAnswer((_) => isFormValidController.stream);
     when(presenter.isLoadStream).thenAnswer((_) => isLoadController.stream);
+    when(presenter.mainErrorStream)
+        .thenAnswer((_) => mainErrorController.stream);
   }
 
   void closeStreams() {
@@ -49,6 +53,8 @@ void main() {
     passwordErrorController.close();
     passwordConfirmErrorController.close();
     isFormValidController.close();
+    isLoadController.close();
+    mainErrorController.close();
   }
 
   Future<void> loadPage(WidgetTester tester) async {
@@ -263,5 +269,27 @@ void main() {
     await tester.pump();
 
     expect(find.byType(CircularProgressIndicator), findsNothing);
+  });
+
+  testWidgets('Mensagem de erro quando a function signup falhar...',
+      (tester) async {
+    await loadPage(tester);
+
+    mainErrorController.add(UIError.invalidCredentials);
+    await tester.pump();
+
+    expect(find.text('Credenciais inválidas.'), findsOneWidget);
+  });
+
+  testWidgets(
+      'Mensagem de erro quando a function signup ter um erro inexperado...',
+      (tester) async {
+    await loadPage(tester);
+
+    mainErrorController.add(UIError.unexpected);
+    await tester.pump();
+
+    expect(find.text('Algo errado aconteceu. Tente novamente em breve.'),
+        findsOneWidget);
   });
 }
