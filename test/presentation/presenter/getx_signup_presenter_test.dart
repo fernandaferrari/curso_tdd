@@ -1,4 +1,5 @@
 import 'package:curso_tdd/domain/entities/entities.dart';
+import 'package:curso_tdd/domain/helpers/helpers.dart';
 import 'package:curso_tdd/domain/usecases/usecases.dart';
 import 'package:curso_tdd/presentation/presenter/dependencies/dependencies.dart';
 import 'package:curso_tdd/presentation/presenter/presenter.dart';
@@ -36,6 +37,17 @@ void main() {
 
   void mockAddAccount() {
     mockAddAccountCall().thenAnswer((_) async => AccountEntity(token: token));
+  }
+
+  void mockAddAccountError(DomainError error) {
+    mockAddAccountCall().thenThrow(error);
+  }
+
+  PostExpectation mockSaveCurrentAccountCall() =>
+      when(saveCurrentAccount.save(any));
+
+  void mockSaveCurrentAccountError() {
+    mockSaveCurrentAccountCall().thenThrow(DomainError.unexpected);
   }
 
   setUp(() {
@@ -243,5 +255,47 @@ void main() {
     await sut.signup();
 
     verify(saveCurrentAccount.save(AccountEntity(token: token))).called(1);
+  });
+
+  test('Should emit UnexpectedError if SavecurrenteAccount fails', () async {
+    mockSaveCurrentAccountError();
+    sut.validateName(name);
+    sut.validateEmail(email);
+    sut.validatePassword(password);
+    sut.validateConfirmPassword(confirmPassword);
+
+    expectLater(sut.isLoadStream, emitsInOrder([true, false]));
+    sut.mainErrorStream
+        .listen(expectAsync1((error) => expect(error, UIError.unexpected)));
+
+    await sut.signup();
+  });
+
+  test('Should emit correct events on InvalidCredentialsError', () async {
+    mockAddAccountError(DomainError.invalidCredentials);
+    sut.validateName(name);
+    sut.validateEmail(email);
+    sut.validatePassword(password);
+    sut.validateConfirmPassword(confirmPassword);
+
+    expectLater(sut.isLoadStream, emitsInOrder([true, false]));
+    sut.mainErrorStream.listen(
+        expectAsync1((error) => expect(error, UIError.invalidCredentials)));
+
+    await sut.signup();
+  });
+
+  test('Should emit correct events on UnexpectedError', () async {
+    mockAddAccountError(DomainError.unexpected);
+    sut.validateName(name);
+    sut.validateEmail(email);
+    sut.validatePassword(password);
+    sut.validateConfirmPassword(confirmPassword);
+
+    expectLater(sut.isLoadStream, emitsInOrder([true, false]));
+    sut.mainErrorStream
+        .listen(expectAsync1((error) => expect(error, UIError.unexpected)));
+
+    await sut.signup();
   });
 }

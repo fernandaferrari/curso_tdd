@@ -1,3 +1,4 @@
+import 'package:curso_tdd/domain/helpers/helpers.dart';
 import 'package:get/state_manager.dart';
 import 'package:meta/meta.dart';
 
@@ -94,12 +95,24 @@ class GetxSignUpPresenter extends GetxController implements SignUpPresenter {
 
   @override
   Future<void> signup() async {
-    final account = await addAccount.add(AddAccountParams(
-        email: _email,
-        password: _password,
-        name: _name,
-        passwordConfirmation: _confirmPassword));
+    try {
+      _isLoading.value = true;
+      final account = await addAccount.add(AddAccountParams(
+          email: _email,
+          password: _password,
+          name: _name,
+          passwordConfirmation: _confirmPassword));
 
-    saveCurrentAccount.save(account);
+      saveCurrentAccount.save(account);
+    } on DomainError catch (error) {
+      switch (error) {
+        case DomainError.invalidCredentials:
+          _mainError.value = UIError.invalidCredentials;
+          break;
+        default:
+          _mainError.value = UIError.unexpected;
+      }
+      _isLoading.value = false;
+    }
   }
 }
