@@ -1,9 +1,19 @@
+import 'package:flutter/material.dart';
+
 import 'package:curso_tdd/ui/components/components.dart';
 import 'package:curso_tdd/ui/helpers/helpers.dart';
 import 'package:curso_tdd/ui/pages/signup/components/components.dart';
-import 'package:flutter/material.dart';
+import 'package:curso_tdd/ui/pages/signup/signup_presenter.dart';
+import 'package:meta/meta.dart';
+import 'package:provider/provider.dart';
 
 class SignUpPage extends StatelessWidget {
+  final SignUpPresenter presenter;
+
+  SignUpPage({
+    @required this.presenter,
+  });
+
   @override
   Widget build(BuildContext context) {
     void _hideKeyboard() {
@@ -32,28 +42,31 @@ class SignUpPage extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.all(32),
-                child: Form(
-                    child: Column(
-                  children: [
-                    NameInput(),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 8,
+                child: Provider(
+                  create: (_) => presenter,
+                  child: Form(
+                      child: Column(
+                    children: [
+                      NameInput(),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 8,
+                        ),
+                        child: EmailInput(),
                       ),
-                      child: EmailInput(),
-                    ),
-                    PasswordInput(),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8, bottom: 32),
-                      child: ConfirmPasswordInput(),
-                    ),
-                    SignUpButton(),
-                    FlatButton.icon(
-                        onPressed: () {},
-                        icon: const Icon(Icons.exit_to_app),
-                        label: Text(R.strings.login)),
-                  ],
-                )),
+                      PasswordInput(),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8, bottom: 32),
+                        child: ConfirmPasswordInput(),
+                      ),
+                      SignUpButton(),
+                      FlatButton.icon(
+                          onPressed: () {},
+                          icon: const Icon(Icons.exit_to_app),
+                          label: Text(R.strings.login)),
+                    ],
+                  )),
+                ),
               ),
             ],
           )),
