@@ -17,12 +17,14 @@ void main() {
   StreamController<UIError> passwordErrorController;
   StreamController<UIError> nameErrorController;
   StreamController<UIError> passwordConfirmErrorController;
+  StreamController<bool> isFormValidController;
 
   void initStreams() {
     emailErrorController = StreamController<UIError>();
     passwordErrorController = StreamController<UIError>();
     nameErrorController = StreamController<UIError>();
     passwordConfirmErrorController = StreamController<UIError>();
+    isFormValidController = StreamController<bool>();
   }
 
   void mockStreams() {
@@ -34,6 +36,8 @@ void main() {
         .thenAnswer((_) => passwordErrorController.stream);
     when(presenter.confirmPasswordErrorStream)
         .thenAnswer((_) => passwordConfirmErrorController.stream);
+    when(presenter.isFormValidStream)
+        .thenAnswer((_) => isFormValidController.stream);
   }
 
   void closeStreams() {
@@ -41,6 +45,7 @@ void main() {
     emailErrorController.close();
     passwordErrorController.close();
     passwordConfirmErrorController.close();
+    isFormValidController.close();
   }
 
   Future<void> loadPage(WidgetTester tester) async {
@@ -126,5 +131,99 @@ void main() {
         find.descendant(
             of: find.bySemanticsLabel("E-mail"), matching: find.byType(Text)),
         findsOneWidget);
+  });
+
+  testWidgets('simulação de erro para nome...', (tester) async {
+    await loadPage(tester);
+
+    when(presenter.nameErrorStream)
+        .thenAnswer((_) => nameErrorController.stream);
+    nameErrorController.add(UIError.requiredField);
+    await tester.pump();
+
+    expect(find.text('Campo obrigatório.'), findsOneWidget);
+
+    nameErrorController.add(UIError.invalidField);
+    await tester.pump();
+
+    expect(find.text('Campo inválido.'), findsOneWidget);
+
+    nameErrorController.add(null);
+    await tester.pump();
+
+    expect(
+        find.descendant(
+            of: find.bySemanticsLabel("Nome"), matching: find.byType(Text)),
+        findsOneWidget);
+  });
+
+  testWidgets('simulação de erro para password...', (tester) async {
+    await loadPage(tester);
+
+    when(presenter.passwordErrorStream)
+        .thenAnswer((_) => passwordErrorController.stream);
+    passwordErrorController.add(UIError.requiredField);
+    await tester.pump();
+
+    expect(find.text('Campo obrigatório.'), findsOneWidget);
+
+    passwordErrorController.add(UIError.invalidField);
+    await tester.pump();
+
+    expect(find.text('Campo inválido.'), findsOneWidget);
+
+    passwordErrorController.add(null);
+    await tester.pump();
+
+    expect(
+        find.descendant(
+            of: find.bySemanticsLabel("Senha"), matching: find.byType(Text)),
+        findsOneWidget);
+  });
+
+  testWidgets('simulação de erro para confirmar senha...', (tester) async {
+    await loadPage(tester);
+
+    when(presenter.confirmPasswordErrorStream)
+        .thenAnswer((_) => passwordConfirmErrorController.stream);
+    passwordConfirmErrorController.add(UIError.requiredField);
+    await tester.pump();
+
+    expect(find.text('Campo obrigatório.'), findsOneWidget);
+
+    passwordConfirmErrorController.add(UIError.invalidField);
+    await tester.pump();
+
+    expect(find.text('Campo inválido.'), findsOneWidget);
+
+    passwordConfirmErrorController.add(null);
+    await tester.pump();
+
+    expect(
+        find.descendant(
+            of: find.bySemanticsLabel("Confirmar senha."),
+            matching: find.byType(Text)),
+        findsOneWidget);
+  });
+
+  testWidgets('Habilitado botão quando o form é valido...', (tester) async {
+    await loadPage(tester);
+
+    isFormValidController.add(true);
+    await tester.pump();
+
+    final button = tester.widget<RaisedButton>(find.byType(RaisedButton));
+    expect(button.onPressed, isNotNull);
+  });
+
+  testWidgets('Desabilitado botão quando o valor do form é false...',
+      (tester) async {
+    await loadPage(tester);
+
+    isFormValidController.add(false);
+    await tester.pump();
+
+    final button = tester.widget<RaisedButton>(find.byType(RaisedButton));
+    expect(button.onPressed, isNull);
   });
 }
