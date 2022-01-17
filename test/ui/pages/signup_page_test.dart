@@ -226,4 +226,19 @@ void main() {
     final button = tester.widget<RaisedButton>(find.byType(RaisedButton));
     expect(button.onPressed, isNull);
   });
+
+  testWidgets(
+      'Direcionado para a function signup quando o form for submetido...',
+      (tester) async {
+    await loadPage(tester);
+
+    isFormValidController.add(true);
+    await tester.pump();
+    final button = find.byType(RaisedButton);
+    await tester.ensureVisible(button);
+    await tester.tap(button);
+    await tester.pump();
+
+    verify(presenter.signup()).called(1);
+  });
 }
