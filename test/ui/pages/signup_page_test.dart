@@ -18,6 +18,7 @@ void main() {
   StreamController<UIError> nameErrorController;
   StreamController<UIError> passwordConfirmErrorController;
   StreamController<bool> isFormValidController;
+  StreamController<bool> isLoadController;
 
   void initStreams() {
     emailErrorController = StreamController<UIError>();
@@ -25,6 +26,7 @@ void main() {
     nameErrorController = StreamController<UIError>();
     passwordConfirmErrorController = StreamController<UIError>();
     isFormValidController = StreamController<bool>();
+    isLoadController = StreamController<bool>();
   }
 
   void mockStreams() {
@@ -38,6 +40,7 @@ void main() {
         .thenAnswer((_) => passwordConfirmErrorController.stream);
     when(presenter.isFormValidStream)
         .thenAnswer((_) => isFormValidController.stream);
+    when(presenter.isLoadStream).thenAnswer((_) => isLoadController.stream);
   }
 
   void closeStreams() {
@@ -240,5 +243,25 @@ void main() {
     await tester.pump();
 
     verify(presenter.signup()).called(1);
+  });
+
+  testWidgets('Load presente na tela...', (tester) async {
+    await loadPage(tester);
+
+    isLoadController.add(true);
+    await tester.pump();
+
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+  });
+
+  testWidgets('Load não esta presente na tela...', (tester) async {
+    await loadPage(tester);
+
+    isLoadController.add(true);
+    await tester.pump();
+    isLoadController.add(false);
+    await tester.pump();
+
+    expect(find.byType(CircularProgressIndicator), findsNothing);
   });
 }
