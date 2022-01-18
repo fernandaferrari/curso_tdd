@@ -9,7 +9,8 @@ void main() {
     expect(validations, [
       RequiredFieldValidation('email'),
       EmailValidator('email'),
-      RequiredFieldValidation('password')
+      RequiredFieldValidation('password'),
+      MinLengthValidation(field: 'password', size: 3),
     ]);
   });
 }

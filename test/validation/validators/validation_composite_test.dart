@@ -12,11 +12,11 @@ void main() {
   FieldValidationMock validator2;
 
   void mockValidator1(ValidationError error) {
-    when(validator1.validate('any_value')).thenReturn(error);
+    when(validator1.validate({'any_field': 'any_value'})).thenReturn(error);
   }
 
   void mockValidator2(ValidationError error) {
-    when(validator2.validate('any_value')).thenReturn(error);
+    when(validator2.validate({'any_field': 'any_value'})).thenReturn(error);
   }
 
   setUp(() {
@@ -30,7 +30,7 @@ void main() {
     sut = ValidationComposite([validator1, validator2]);
   });
   test('Should return null if all validations return null or empty', () {
-    final error = sut.validate(field: 'any_field', value: 'any_value');
+    final error = sut.validate(field: 'any_field', input: {});
     expect(error, null);
   });
 
@@ -40,7 +40,8 @@ void main() {
     mockValidator1(ValidationError.invalidField);
     mockValidator2(ValidationError.requiredField);
 
-    final error = sut.validate(field: 'any_field', value: 'any_value');
+    final error =
+        sut.validate(field: 'any_field', input: {'any_field': 'any_value'});
     expect(error, ValidationError.requiredField);
   });
 }
