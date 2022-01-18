@@ -6,7 +6,7 @@ import 'package:curso_tdd/domain/usecases/usecases.dart';
 import 'package:meta/meta.dart';
 
 class RemoteAddAccount implements AddAccount {
-  final IHttpClient httpClient;
+  final IHttpClient<Map> httpClient;
   final String url;
 
   RemoteAddAccount({@required this.httpClient, @required this.url});

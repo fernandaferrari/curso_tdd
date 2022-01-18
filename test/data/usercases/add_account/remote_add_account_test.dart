@@ -7,7 +7,7 @@ import 'package:test/test.dart';
 import 'package:curso_tdd/data/http/http.dart';
 import 'package:curso_tdd/domain/usecases/usecases.dart';
 
-class IHttpClientMock extends Mock implements IHttpClient {}
+class IHttpClientMock extends Mock implements IHttpClient<Map> {}
 
 void main() {
   RemoteAddAccount sut;
