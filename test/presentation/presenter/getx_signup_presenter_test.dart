@@ -271,6 +271,19 @@ void main() {
         .called(1);
   });
 
+  test('Should emit correct events on EmailInUserError', () async {
+    mockAddAccountError(DomainError.emailInUse);
+    sut.validateName(name);
+    sut.validateEmail(email);
+    sut.validatePassword(password);
+    sut.validateConfirmPassword(confirmPassword);
+
+    expectLater(sut.mainErrorStream, emitsInOrder([null, UIError.emailInUse]));
+    expectLater(sut.isLoadStream, emitsInOrder([true, false]));
+
+    await sut.signup();
+  });
+
   test('Should call SaveCurrentAccount with correct value', () async {
     sut.validateEmail(email);
     sut.validatePassword(password);
@@ -287,9 +300,8 @@ void main() {
     sut.validatePassword(password);
     sut.validateConfirmPassword(confirmPassword);
 
+    expectLater(sut.mainErrorStream, emitsInOrder([null, UIError.unexpected]));
     expectLater(sut.isLoadStream, emitsInOrder([true, false]));
-    sut.mainErrorStream
-        .listen(expectAsync1((error) => expect(error, UIError.unexpected)));
 
     await sut.signup();
   });
@@ -301,9 +313,10 @@ void main() {
     sut.validatePassword(password);
     sut.validateConfirmPassword(confirmPassword);
 
+    expectLater(
+        sut.mainErrorStream, emitsInOrder([null, UIError.invalidCredentials]));
+
     expectLater(sut.isLoadStream, emitsInOrder([true, false]));
-    sut.mainErrorStream.listen(
-        expectAsync1((error) => expect(error, UIError.invalidCredentials)));
 
     await sut.signup();
   });
@@ -316,8 +329,7 @@ void main() {
     sut.validateConfirmPassword(confirmPassword);
 
     expectLater(sut.isLoadStream, emitsInOrder([true, false]));
-    sut.mainErrorStream
-        .listen(expectAsync1((error) => expect(error, UIError.unexpected)));
+    expectLater(sut.mainErrorStream, emitsInOrder([null, UIError.unexpected]));
 
     await sut.signup();
   });
@@ -328,6 +340,7 @@ void main() {
     sut.validatePassword(password);
     sut.validateConfirmPassword(confirmPassword);
 
+    expectLater(sut.mainErrorStream, emits(null));
     expectLater(sut.isLoadStream, emits(true));
 
     await sut.signup();

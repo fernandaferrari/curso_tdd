@@ -30,4 +30,7 @@ class EnUs implements Translations {
 
   @override
   String get name => 'Name';
+
+  @override
+  String get msgEmailInUse => 'Email in use';
 }

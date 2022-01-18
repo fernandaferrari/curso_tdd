@@ -101,6 +101,7 @@ class GetxSignUpPresenter extends GetxController implements SignUpPresenter {
   @override
   Future<void> signup() async {
     try {
+      _mainError.value = null;
       _isLoading.value = true;
       final account = await addAccount.add(AddAccountParams(
           email: _email,
@@ -115,8 +116,13 @@ class GetxSignUpPresenter extends GetxController implements SignUpPresenter {
         case DomainError.invalidCredentials:
           _mainError.value = UIError.invalidCredentials;
           break;
+
+        case DomainError.emailInUse:
+          _mainError.value = UIError.emailInUse;
+          break;
         default:
           _mainError.value = UIError.unexpected;
+          break;
       }
       _isLoading.value = false;
     }

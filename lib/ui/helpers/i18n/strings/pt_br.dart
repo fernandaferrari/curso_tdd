@@ -30,4 +30,7 @@ class PtBr implements Translations {
 
   @override
   String get name => 'Nome';
+
+  @override
+  String get msgEmailInUse => 'E-mail já está em uso';
 }
