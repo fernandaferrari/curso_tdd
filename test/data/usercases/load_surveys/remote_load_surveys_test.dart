@@ -1,5 +1,6 @@
 import 'package:curso_tdd/data/model/model.dart';
 import 'package:curso_tdd/domain/entities/entities.dart';
+import 'package:curso_tdd/domain/helpers/helpers.dart';
 import 'package:faker/faker.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:meta/meta.dart';
@@ -17,10 +18,16 @@ class RemoteLoadSurveys {
   });
 
   Future<List<SurveyEntity>> load() async {
-    final httpResponse = await httpClient.request(url: url, method: 'get');
-    return httpResponse
-        .map((json) => RemoteSurveyModel.fromJson(json).toEntity())
-        .toList();
+    try {
+      final httpResponse = await httpClient.request(url: url, method: 'get');
+      return httpResponse
+          .map((json) => RemoteSurveyModel.fromJson(json).toEntity())
+          .toList();
+    } on HttpError catch (error) {
+      throw error == HttpError.forbidden
+          ? DomainError.acessDenied
+          : DomainError.unexpected;
+    }
   }
 }
 
@@ -55,6 +62,10 @@ void main() {
     mockRequest().thenAnswer((_) async => data);
   }
 
+  void mockHttpError(HttpError error) {
+    mockRequest().thenThrow(error);
+  }
+
   setUp(() {
     url = faker.internet.httpUrl();
     httpClient = HttpClientSpy();
@@ -83,5 +94,44 @@ void main() {
           didAnswer: list[1]['didAnswer'],
           dateTime: DateTime.parse(list[1]['date']))
     ]);
+  });
+
+  test(
+      'Should return UnexpectedError if HttpClient returns 200 with invalid data',
+      () async {
+    mockHttpData([
+      {'invalid_key': 'invalid_value'}
+    ]);
+
+    final future = sut.load();
+
+    expect(future, throwsA(DomainError.unexpected));
+  });
+
+  test('Quando ocorrer um erro inesperado pelo HttpClient returns 404',
+      () async {
+    mockHttpError(HttpError.notFound);
+
+    final future = sut.load();
+
+    expect(future, throwsA(DomainError.unexpected));
+  });
+
+  test('Quando ocorrer um erro inesperado pelo HttpClient returns 500',
+      () async {
+    mockHttpError(HttpError.serverError);
+
+    final future = sut.load();
+
+    expect(future, throwsA(DomainError.unexpected));
+  });
+
+  test('Quando ocorrer um erro AccessDeniedError pelo HttpClient returns 403',
+      () async {
+    mockHttpError(HttpError.forbidden);
+
+    final future = sut.load();
+
+    expect(future, throwsA(DomainError.acessDenied));
   });
 }
