@@ -4,10 +4,12 @@ ThemeData appTheme() {
   const primaryColor = Color.fromRGBO(136, 14, 79, 1);
   const primaryColorDark = Color.fromRGBO(96, 0, 39, 1);
   const primaryColorLight = Color.fromRGBO(188, 71, 123, 1);
+  const secundaryColorDark = Color.fromRGBO(0, 37, 26, 1);
   return ThemeData(
     primaryColor: primaryColor,
     primaryColorDark: primaryColorDark,
     primaryColorLight: primaryColorLight,
+    secondaryHeaderColor: secundaryColorDark,
     colorScheme: ColorScheme.fromSwatch(accentColor: primaryColor),
     backgroundColor: Colors.white,
     textTheme: const TextTheme(
@@ -22,9 +24,7 @@ ThemeData appTheme() {
       focusedBorder:
           UnderlineInputBorder(borderSide: BorderSide(color: primaryColor)),
     ),
-    // elevatedButtonTheme: ElevatedButtonThemeData(
-    //   style: raisedButtonSyle,
-    // ),
+    //buttonTheme: buttonTheme
   );
 
   // final ButtonThemeData raisedButtonSyle = ButtonThemeData(

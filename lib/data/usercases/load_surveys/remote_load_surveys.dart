@@ -6,7 +6,7 @@ import 'package:meta/meta.dart';
 
 class RemoteLoadSurveys {
   final String url;
-  final IHttpClient<List<Map>> httpClient;
+  final IHttpClient httpClient;
 
   RemoteLoadSurveys({
     @required this.url,

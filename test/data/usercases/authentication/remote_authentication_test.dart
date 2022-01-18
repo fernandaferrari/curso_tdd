@@ -7,7 +7,7 @@ import 'package:curso_tdd/data/http/http.dart';
 import 'package:curso_tdd/domain/usecases/usecases.dart';
 import 'package:curso_tdd/domain/helpers/helpers.dart';
 
-class IHttpClientMock extends Mock implements IHttpClient<Map> {}
+class IHttpClientMock extends Mock implements IHttpClient {}
 
 void main() {
   RemoteAuthentication sut;

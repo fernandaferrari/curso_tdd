@@ -7,7 +7,7 @@ import 'package:meta/meta.dart';
 import '../../http/http.dart';
 
 class RemoteAuthentication implements IAuthentication {
-  final IHttpClient<Map> httpClient;
+  final IHttpClient httpClient;
   final String url;
 
   RemoteAuthentication({@required this.httpClient, @required this.url});

@@ -7,7 +7,7 @@ import 'package:mockito/mockito.dart';
 
 import 'package:curso_tdd/data/http/http.dart';
 
-class HttpClientSpy extends Mock implements IHttpClient<List<Map>> {}
+class HttpClientSpy extends Mock implements IHttpClient {}
 
 void main() {
   RemoteLoadSurveys sut;

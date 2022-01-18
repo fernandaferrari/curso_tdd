@@ -33,4 +33,7 @@ class PtBr implements Translations {
 
   @override
   String get msgEmailInUse => 'E-mail já está em uso';
+
+  @override
+  String get surveys => 'Enquetes';
 }
