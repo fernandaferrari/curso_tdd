@@ -4,6 +4,6 @@ import 'package:curso_tdd/main/factories/cache/cache.dart';
 
 LoadCurrentAccount makeLocalLoadCurrentAccount() {
   return LocalLoadCurrentAccount(
-    fetchSecureCacheStorage: makeLocalStorageAdapter(),
+    fetchSecureCacheStorage: makeSecureStorageAdapter(),
   );
 }

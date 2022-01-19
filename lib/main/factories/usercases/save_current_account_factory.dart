@@ -4,5 +4,5 @@ import 'package:curso_tdd/main/factories/cache/cache.dart';
 
 ISaveCurrentAccount makeLocalSaveCurrentAccount() {
   return LocalSaveCurrentAccount(
-      saveSecureCacheStorage: makeLocalStorageAdapter());
+      saveSecureCacheStorage: makeSecureStorageAdapter());
 }
