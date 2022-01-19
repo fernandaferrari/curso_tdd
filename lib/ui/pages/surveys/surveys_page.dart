@@ -46,13 +46,20 @@ class SurveysPage extends StatelessWidget {
                 );
               }
 
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 20),
-                child: CarouselSlider(
-                    items: [SurveyItem()],
-                    options: CarouselOptions(
-                        enlargeCenterPage: true, aspectRatio: 1.2)),
-              );
+              if (snapshot.hasData) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  child: CarouselSlider(
+                      items: snapshot.data
+                          .map((viewModel) => SurveyItem(viewModel: viewModel))
+                          .toList(),
+                      options: CarouselOptions(
+                        enlargeCenterPage: true,
+                        aspectRatio: 1.2,
+                      )),
+                );
+              }
+              return SizedBox(height: 0);
             });
       }),
     );
