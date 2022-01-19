@@ -72,22 +72,6 @@ void main() {
     closeStreams();
   });
 
-  testWidgets('Estado inicial da tela de login ...', (tester) async {
-    await loadPage(tester);
-
-    final emailTextChildren = find.descendant(
-        of: find.bySemanticsLabel('E-mail'), matching: find.byType(Text));
-    expect(emailTextChildren, findsOneWidget);
-
-    final passwordTextChildren = find.descendant(
-        of: find.bySemanticsLabel('Password'), matching: find.byType(Text));
-    expect(passwordTextChildren, findsOneWidget);
-
-    final button = tester.widget<RaisedButton>(find.byType(RaisedButton));
-    expect(button.onPressed, null);
-    expect(find.byType(CircularProgressIndicator), findsNothing);
-  });
-
   testWidgets('Validação do formulario quando os valores estão corretos ...',
       (tester) async {
     await loadPage(tester);

@@ -13,9 +13,9 @@ void main() {
   RemoteLoadSurveys sut;
   HttpClientSpy httpClient;
   String url;
-  List<Map> list;
+  List<dynamic> list;
 
-  List<Map> mockValidData() => [
+  List<dynamic> mockValidData() => [
         {
           'id': faker.guid.guid(),
           'question': faker.randomGenerator.string(50),
@@ -33,7 +33,7 @@ void main() {
   PostExpectation mockRequest() => when(
       httpClient.request(url: anyNamed('url'), method: anyNamed('method')));
 
-  void mockHttpData(List<Map> data) {
+  void mockHttpData(List<dynamic> data) {
     list = data;
     mockRequest().thenAnswer((_) async => data);
   }

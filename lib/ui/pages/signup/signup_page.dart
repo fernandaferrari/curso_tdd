@@ -27,7 +27,7 @@ class SignUpPage extends StatelessWidget {
     return Scaffold(
       body: Builder(builder: (context) {
         presenter.isLoadStream.listen((isLoading) {
-          if (isLoading) {
+          if (isLoading == true) {
             showLoading(context);
           } else {
             hideLoading(context);
