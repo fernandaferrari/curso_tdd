@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:curso_tdd/ui/components/components.dart';
+import 'package:curso_tdd/ui/pages/surveys/surveys_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
@@ -30,13 +31,29 @@ class SurveysPage extends StatelessWidget {
             hideLoading(context);
           }
         });
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20),
-          child: CarouselSlider(
-              items: [SurveyItem()],
-              options:
-                  CarouselOptions(enlargeCenterPage: true, aspectRatio: 1.2)),
-        );
+        return StreamBuilder<List<SurveysViewModel>>(
+            stream: presenter.loadSurveys,
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return Column(
+                  children: [
+                    Text(snapshot.error),
+                    RaisedButton(
+                      onPressed: null,
+                      child: Text(R.strings.reload),
+                    )
+                  ],
+                );
+              }
+
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 20),
+                child: CarouselSlider(
+                    items: [SurveyItem()],
+                    options: CarouselOptions(
+                        enlargeCenterPage: true, aspectRatio: 1.2)),
+              );
+            });
       }),
     );
   }
