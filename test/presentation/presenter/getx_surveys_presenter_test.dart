@@ -12,7 +12,7 @@ class LoadSurveysSpy extends Mock implements LoadSurveys {}
 
 void main() {
   GetxSurveysPresenter sut;
-  LoadSurveysSpy loadSurveysStream;
+  LoadSurveysSpy surveysStream;
   List<SurveyEntity> surveys;
 
   List<SurveyEntity> mockValidData() => [
@@ -28,7 +28,7 @@ void main() {
             didAnswer: false)
       ];
 
-  PostExpectation mockLoadCall() => when(loadSurveysStream.load());
+  PostExpectation mockLoadCall() => when(surveysStream.load());
 
   void mockLoadSurveys(List<SurveyEntity> data) {
     surveys = data;
@@ -39,15 +39,15 @@ void main() {
       mockLoadCall().thenThrow(DomainError.unexpected);
 
   setUp(() {
-    loadSurveysStream = LoadSurveysSpy();
-    sut = GetxSurveysPresenter(loadSurveysStream: loadSurveysStream);
+    surveysStream = LoadSurveysSpy();
+    sut = GetxSurveysPresenter(loadSurveysStream: surveysStream);
     mockLoadSurveys(mockValidData());
   });
 
   test('Should call LoadSurveys on loadData', () async {
     await sut.loadData();
 
-    verify(loadSurveysStream.load()).called(1);
+    verify(surveysStream.load()).called(1);
   });
 
   test('Should emit correct events on success', () async {
