@@ -1,6 +1,8 @@
 import 'package:curso_tdd/domain/entities/survey_entity.dart';
+import 'package:curso_tdd/domain/helpers/helpers.dart';
 import 'package:curso_tdd/domain/usecases/load_surveys.dart';
 import 'package:curso_tdd/presentation/presenter/getx_surveys_presenter.dart';
+import 'package:curso_tdd/ui/helpers/helpers.dart';
 import 'package:curso_tdd/ui/pages/surveys/surveys_view_model.dart';
 import 'package:faker/faker.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -26,10 +28,15 @@ void main() {
             didAnswer: false)
       ];
 
+  PostExpectation mockLoadCall() => when(loadSurveysStream.load());
+
   void mockLoadSurveys(List<SurveyEntity> data) {
     surveys = data;
-    when(loadSurveysStream.load()).thenAnswer((_) async => data);
+    mockLoadCall().thenAnswer((_) async => data);
   }
+
+  void mockLoadSurveysError() =>
+      mockLoadCall().thenThrow(DomainError.unexpected);
 
   setUp(() {
     loadSurveysStream = LoadSurveysSpy();
@@ -57,6 +64,16 @@ void main() {
               date: '10 Jan 2022',
               didAnswer: surveys[1].didAnswer),
         ])));
+
+    await sut.loadData();
+  });
+
+  test('Should emit correct events on failure', () async {
+    mockLoadSurveysError();
+    expectLater(sut.isLoadStream, emitsInOrder([true, false]));
+    sut.surveysStream.listen(null,
+        onError: expectAsync1(
+            (error) => expect(error, UIError.unexpected.description)));
 
     await sut.loadData();
   });

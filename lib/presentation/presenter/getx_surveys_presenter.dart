@@ -22,15 +22,20 @@ class GetxSurveysPresenter extends GetxController {
   Stream<List<SurveysViewModel>> get surveysStream => _surveys.stream;
 
   Future<void> loadData() async {
-    _isLoad.value = true;
-    final surveys = await loadSurveysStream.load();
-    _surveys.value = surveys
-        .map((surveys) => SurveysViewModel(
-            id: surveys.id,
-            question: surveys.question,
-            date: DateFormat('dd MMM yyyy').format(surveys.dateTime),
-            didAnswer: surveys.didAnswer))
-        .toList();
-    _isLoad.value = false;
+    try {
+      _isLoad.value = true;
+      final surveys = await loadSurveysStream.load();
+      _surveys.value = surveys
+          .map((surveys) => SurveysViewModel(
+              id: surveys.id,
+              question: surveys.question,
+              date: DateFormat('dd MMM yyyy').format(surveys.dateTime),
+              didAnswer: surveys.didAnswer))
+          .toList();
+    } on DomainError {
+      _surveys.subject.addError(UIError.unexpected.description);
+    } finally {
+      _isLoad.value = false;
+    }
   }
 }
