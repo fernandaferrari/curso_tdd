@@ -18,9 +18,6 @@ void main() {
   PostExpectation mockSetCall() => when(localStorage.setItem(any, any));
   void mockExceptionSet() => mockSetCall().thenThrow(Exception);
 
-  PostExpectation mockGetCall() => when(localStorage.getItem(any));
-  void mockExceptionGet() => mockGetCall().thenThrow(Exception);
-
   setUp(() {
     localStorage = LocalStorageSpy();
     sut = LocalStoraAdapter(localStorage: localStorage);
@@ -67,10 +64,25 @@ void main() {
   });
 
   group('fetch', () {
+    String result;
+    PostExpectation mockGetCall() => when(localStorage.getItem(any));
+    void mockFetch() =>
+        mockGetCall().thenAnswer((realInvocation) async => result);
+    void mockExceptionGet() => mockGetCall().thenThrow(Exception);
+
+    setUp(() {
+      mockFetch();
+    });
     test('Should call localStorage with correct values', () async {
       await sut.fetch(key);
 
       verify(localStorage.getItem(key)).called(1);
+    });
+
+    test('Should return same value as localStorage', () async {
+      final data = await sut.fetch(key);
+
+      expect(data, result);
     });
 
     test('Should throw if fetch throws', () async {
