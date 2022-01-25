@@ -18,6 +18,9 @@ void main() {
   PostExpectation mockSetCall() => when(localStorage.setItem(any, any));
   void mockExceptionSet() => mockSetCall().thenThrow(Exception);
 
+  PostExpectation mockGetCall() => when(localStorage.getItem(any));
+  void mockExceptionGet() => mockGetCall().thenThrow(Exception);
+
   setUp(() {
     localStorage = LocalStorageSpy();
     sut = LocalStoraAdapter(localStorage: localStorage);
@@ -58,6 +61,21 @@ void main() {
     test('Should throw if deleteItem throws', () async {
       mockExceptionDelete();
       final future = sut.delete(key);
+
+      expect(future, throwsA(Exception));
+    });
+  });
+
+  group('fetch', () {
+    test('Should call localStorage with correct values', () async {
+      await sut.fetch(key);
+
+      verify(localStorage.getItem(key)).called(1);
+    });
+
+    test('Should throw if fetch throws', () async {
+      mockExceptionGet();
+      final future = sut.fetch(key);
 
       expect(future, throwsA(Exception));
     });
