@@ -1,23 +1,10 @@
+import 'package:curso_tdd/infra/cache/cache.dart';
 import 'package:faker/faker.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:localstorage/localstorage.dart';
-import 'package:meta/meta.dart';
 import 'package:mockito/mockito.dart';
 
 class LocalStorageSpy extends Mock implements LocalStorage {}
-
-class LocalStoraAdapter {
-  final LocalStorage localStorage;
-  LocalStoraAdapter({
-    @required this.localStorage,
-  });
-
-  Future<void> save({@required String key, @required dynamic value}) async {
-    await localStorage.deleteItem(key);
-    await localStorage.setItem(key, value);
-  }
-}
 
 void main() {
   LocalStorageSpy localStorage;
@@ -28,23 +15,51 @@ void main() {
   PostExpectation mockDeleteCall() => when(localStorage.deleteItem(any));
   void mockExceptionDelete() => mockDeleteCall().thenThrow(Exception);
 
+  PostExpectation mockSetCall() => when(localStorage.setItem(any, any));
+  void mockExceptionSet() => mockSetCall().thenThrow(Exception);
+
   setUp(() {
     localStorage = LocalStorageSpy();
     sut = LocalStoraAdapter(localStorage: localStorage);
     key = faker.randomGenerator.string(5);
     value = faker.randomGenerator.string(50);
   });
-  test('Should call localStorage with correct values', () async {
-    await sut.save(key: key, value: value);
 
-    verify(localStorage.deleteItem(key)).called(1);
-    verify(localStorage.setItem(key, value)).called(1);
+  group('save', () {
+    test('Should call localStorage with correct values', () async {
+      await sut.save(key: key, value: value);
+
+      verify(localStorage.deleteItem(key)).called(1);
+      verify(localStorage.setItem(key, value)).called(1);
+    });
+
+    test('Should throw if deleteItem throws', () async {
+      mockExceptionDelete();
+      final future = sut.save(key: key, value: value);
+
+      expect(future, throwsA(Exception));
+    });
+
+    test('Should throw if setItem throws', () async {
+      mockExceptionSet();
+      final future = sut.save(key: key, value: value);
+
+      expect(future, throwsA(Exception));
+    });
   });
 
-  test('Should throw if deleteItem throws', () async {
-    mockExceptionDelete();
-    final future = sut.save(key: key, value: value);
+  group('delete', () {
+    test('Should call localStorage with correct values', () async {
+      await sut.delete(key);
 
-    expect(future, throwsA(Exception));
+      verify(localStorage.deleteItem(key)).called(1);
+    });
+
+    test('Should throw if deleteItem throws', () async {
+      mockExceptionDelete();
+      final future = sut.delete(key);
+
+      expect(future, throwsA(Exception));
+    });
   });
 }
