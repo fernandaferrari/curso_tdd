@@ -1,6 +1,6 @@
+import 'package:curso_tdd/main/composites/composites.dart';
 import 'package:curso_tdd/presentation/presenter/dependencies/validation.dart';
 import 'package:curso_tdd/validation/dependencies/field_validation.dart';
-import 'package:curso_tdd/validation/validators/validators.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
