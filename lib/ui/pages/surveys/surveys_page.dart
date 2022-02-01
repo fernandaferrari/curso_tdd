@@ -1,12 +1,12 @@
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:curso_tdd/ui/components/components.dart';
-import 'package:curso_tdd/ui/pages/surveys/surveys_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
+import 'package:curso_tdd/ui/components/components.dart';
 import 'package:curso_tdd/ui/helpers/helpers.dart';
 import 'package:curso_tdd/ui/pages/surveys/components/components.dart';
 import 'package:curso_tdd/ui/pages/surveys/surveys_presenter.dart';
+import 'package:curso_tdd/ui/pages/surveys/surveys_view_model.dart';
 
 class SurveysPage extends StatelessWidget {
   final SurveysPresenter presenter;
@@ -35,23 +35,9 @@ class SurveysPage extends StatelessWidget {
             stream: presenter.surveysStream,
             builder: (context, snapshot) {
               if (snapshot.hasError) {
-                return Padding(
-                  padding: const EdgeInsets.all(40),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        snapshot.error,
-                        style: TextStyle(fontSize: 16),
-                        textAlign: TextAlign.center,
-                      ),
-                      SizedBox(height: 10),
-                      RaisedButton(
-                        onPressed: presenter.loadData,
-                        child: Text(R.strings.reload),
-                      )
-                    ],
-                  ),
+                return ReloadScreen(
+                  error: snapshot.error,
+                  reload: presenter.loadData,
                 );
               }
 
