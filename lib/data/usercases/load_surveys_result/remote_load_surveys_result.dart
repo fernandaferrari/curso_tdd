@@ -1,7 +1,6 @@
 import 'package:curso_tdd/data/http/http.dart';
 import 'package:curso_tdd/data/model/model.dart';
 import 'package:curso_tdd/domain/entities/entities.dart';
-import 'package:curso_tdd/domain/entities/survey_entity.dart';
 import 'package:curso_tdd/domain/helpers/helpers.dart';
 import 'package:curso_tdd/domain/usecases/usecases.dart';
 import 'package:meta/meta.dart';
