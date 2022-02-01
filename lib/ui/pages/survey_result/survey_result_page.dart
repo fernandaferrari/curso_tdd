@@ -1,4 +1,5 @@
 import 'package:curso_tdd/ui/components/components.dart';
+import 'package:curso_tdd/ui/pages/pages.dart';
 import 'package:curso_tdd/ui/pages/survey_result/survey_result_presenter.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
@@ -29,7 +30,7 @@ class SurveyResultPage extends StatelessWidget {
 
         presenter.loadData();
 
-        return StreamBuilder<dynamic>(
+        return StreamBuilder<SurveysResultViewModel>(
             stream: presenter.surveysResultStream,
             builder: (context, snapshot) {
               if (snapshot.hasError) {
@@ -40,7 +41,7 @@ class SurveyResultPage extends StatelessWidget {
               }
 
               if (snapshot.hasData) {
-                return SurveyResult();
+                return SurveyResult(data: snapshot.data);
               }
               return SizedBox(height: 0);
             });

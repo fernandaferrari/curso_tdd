@@ -1,10 +1,16 @@
+import 'package:curso_tdd/ui/pages/pages.dart';
+import 'package:curso_tdd/ui/pages/survey_result/components/components.dart';
 import 'package:flutter/material.dart';
 
 class SurveyResult extends StatelessWidget {
+  final SurveysResultViewModel data;
+
+  const SurveyResult({Key key, this.data}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      itemCount: 4,
+      itemCount: data.answers.length + 1,
       itemBuilder: (ctx, index) {
         if (index == 0) {
           return Container(
@@ -12,7 +18,7 @@ class SurveyResult extends StatelessWidget {
             decoration: BoxDecoration(
                 color: Theme.of(context).disabledColor.withAlpha(80)),
             child: Text(
-              "Qual é seu framework preferido?",
+              data.question,
               style: TextStyle(fontSize: 18),
             ),
           );
@@ -26,31 +32,31 @@ class SurveyResult extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Image.network(
-                    'https://fordevs.herokuapp.com/static/img/logo-angular.png',
-                    width: 40,
-                  ),
+                  data.answers[index - 1].image != null
+                      ? Image.network(
+                          data.answers[index - 1].image,
+                          width: 40,
+                        )
+                      : SizedBox(
+                          height: 0,
+                        ),
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       child: Text(
-                        "Angular",
+                        data.answers[index - 1].answer,
                         style: TextStyle(fontSize: 16),
                       ),
                     ),
                   ),
-                  Text("100%",
+                  Text(data.answers[index - 1].percent,
                       style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                           color: Theme.of(context).primaryColorDark)),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 10),
-                    child: Icon(
-                      Icons.check_circle,
-                      color: Theme.of(context).highlightColor,
-                    ),
-                  ),
+                  data.answers[index - 1].isCurrentAnswer
+                      ? ActiveIcon()
+                      : DisableIcon(),
                 ],
               ),
             ),
