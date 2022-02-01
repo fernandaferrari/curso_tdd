@@ -5,12 +5,18 @@ ThemeData appTheme() {
   const primaryColorDark = Color.fromRGBO(96, 0, 39, 1);
   const primaryColorLight = Color.fromRGBO(188, 71, 123, 1);
   const secundaryColorDark = Color.fromRGBO(0, 37, 26, 1);
+  const secundaryColor = Color.fromRGBO(0, 77, 64, 1);
+  final disableColor = Colors.grey[400];
+  final dividerColor = Colors.grey;
   return ThemeData(
     primaryColor: primaryColor,
     primaryColorDark: primaryColorDark,
     primaryColorLight: primaryColorLight,
+    highlightColor: secundaryColor,
     secondaryHeaderColor: secundaryColorDark,
     colorScheme: ColorScheme.fromSwatch(accentColor: primaryColor),
+    disabledColor: disableColor,
+    dividerColor: dividerColor,
     backgroundColor: Colors.white,
     textTheme: const TextTheme(
         headline1: TextStyle(
