@@ -1,10 +1,9 @@
 import 'package:curso_tdd/data/usercases/load_surveys/local_load_surveys.dart';
 import 'package:curso_tdd/domain/entities/survey_entity.dart';
 import 'package:curso_tdd/domain/helpers/helpers.dart';
-import 'package:curso_tdd/domain/usecases/load_surveys.dart';
+import 'package:curso_tdd/main/composites/composites.dart';
 import 'package:faker/faker.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:meta/meta.dart';
 import 'package:mockito/mockito.dart';
 
 import 'package:curso_tdd/data/usercases/usecase.dart';
@@ -12,30 +11,6 @@ import 'package:curso_tdd/data/usercases/usecase.dart';
 class RemoteLoadSurveysSpy extends Mock implements RemoteLoadSurveys {}
 
 class LocalLoadSurveysSpy extends Mock implements LocalLoadSurveys {}
-
-class RemoteLoadSurveysWithLocalFallback implements LoadSurveys {
-  final RemoteLoadSurveys remote;
-  final LocalLoadSurveys local;
-
-  RemoteLoadSurveysWithLocalFallback({
-    @required this.remote,
-    @required this.local,
-  });
-
-  Future<List<SurveyEntity>> load() async {
-    try {
-      final surveys = await remote.load();
-      await local.save(surveys);
-      return surveys;
-    } catch (error) {
-      if (error == DomainError.acessDenied) {
-        rethrow;
-      }
-      await local.validate();
-      return await local.load();
-    }
-  }
-}
 
 void main() {
   RemoteLoadSurveysWithLocalFallback sut;
@@ -68,6 +43,9 @@ void main() {
 
   void mockRemoteLoadError(DomainError error) =>
       mockRemoteLoadCall().thenThrow(error);
+
+  void mockLocalLoadError() =>
+      mockLoadSurveysCall().thenThrow(DomainError.unexpected);
 
   setUp(() {
     local = LocalLoadSurveysSpy();
@@ -115,5 +93,14 @@ void main() {
     final surveys = await sut.load();
 
     expect(surveys, localSurveys);
+  });
+
+  test('Should throw UnexpectedError if remote and local throws', () async {
+    mockRemoteLoadError(DomainError.unexpected);
+    mockLocalLoadError();
+
+    final future = sut.load();
+
+    expect(future, throwsA(DomainError.unexpected));
   });
 }
