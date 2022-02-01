@@ -32,7 +32,7 @@ class RemoteLoadSurveysWithLocalFallback implements LoadSurveys {
         rethrow;
       }
       await local.validate();
-      await local.load();
+      return await local.load();
     }
   }
 }
@@ -41,7 +41,7 @@ void main() {
   RemoteLoadSurveysWithLocalFallback sut;
   RemoteLoadSurveysSpy remote;
   LocalLoadSurveysSpy local;
-
+  List<SurveyEntity> localSurveys;
   List<SurveyEntity> remoteSurveys;
 
   List<SurveyEntity> mockSurveys() => [
@@ -59,6 +59,13 @@ void main() {
     mockRemoteLoadCall().thenAnswer((realInvocation) async => remoteSurveys);
   }
 
+  PostExpectation mockLoadSurveysCall() => when(local.load());
+
+  void mockLocalLoad() {
+    localSurveys = mockSurveys();
+    mockLoadSurveysCall().thenAnswer((_) async => localSurveys);
+  }
+
   void mockRemoteLoadError(DomainError error) =>
       mockRemoteLoadCall().thenThrow(error);
 
@@ -67,6 +74,7 @@ void main() {
     remote = RemoteLoadSurveysSpy();
     sut = RemoteLoadSurveysWithLocalFallback(remote: remote, local: local);
     mockRemoteLoad();
+    mockLocalLoad();
   });
 
   test('Should call remote load', () async {
@@ -100,5 +108,12 @@ void main() {
 
     verify(local.validate()).called(1);
     verify(local.load()).called(1);
+  });
+
+  test('Should return local surveys', () async {
+    mockRemoteLoadError(DomainError.unexpected);
+    final surveys = await sut.load();
+
+    expect(surveys, localSurveys);
   });
 }
