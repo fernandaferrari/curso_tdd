@@ -1,3 +1,4 @@
+import 'package:curso_tdd/ui/components/components.dart';
 import 'package:curso_tdd/ui/pages/survey_result/survey_result_presenter.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
@@ -16,6 +17,14 @@ class SurveyResultPage extends StatelessWidget {
         title: Center(child: Text(R.strings.surveys)),
       ),
       body: Builder(builder: (ctx) {
+        presenter.isLoadStream.listen((isLoading) {
+          if (isLoading == true) {
+            showLoading(context);
+          } else {
+            hideLoading(context);
+          }
+        });
+
         presenter.loadData();
 
         return ListView.builder(
