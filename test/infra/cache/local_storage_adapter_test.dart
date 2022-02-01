@@ -8,7 +8,7 @@ class LocalStorageSpy extends Mock implements LocalStorage {}
 
 void main() {
   LocalStorageSpy localStorage;
-  LocalStoraAdapter sut;
+  LocalStorageAdapter sut;
   String key;
   dynamic value;
 
@@ -20,7 +20,7 @@ void main() {
 
   setUp(() {
     localStorage = LocalStorageSpy();
-    sut = LocalStoraAdapter(localStorage: localStorage);
+    sut = LocalStorageAdapter(localStorage: localStorage);
     key = faker.randomGenerator.string(5);
     value = faker.randomGenerator.string(50);
   });

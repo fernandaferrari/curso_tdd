@@ -1,5 +1,5 @@
 import 'package:curso_tdd/infra/cache/cache.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:localstorage/localstorage.dart';
 
-SecureStorageAdapter makeSecureStorageAdapter() =>
-    SecureStorageAdapter(secureStorage: FlutterSecureStorage());
+LocalStorageAdapter makeLocalStorageAdapter() =>
+    LocalStorageAdapter(localStorage: LocalStorage('fordev'));
