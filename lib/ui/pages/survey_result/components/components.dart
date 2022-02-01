@@ -1,1 +1,1 @@
-export 'surveys_item.dart';
+export 'survey_result.dart';
