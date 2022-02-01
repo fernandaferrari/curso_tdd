@@ -19,7 +19,7 @@ class App extends StatelessWidget {
       title: 'TDD',
       debugShowCheckedModeBanner: false,
       theme: appTheme(),
-      initialRoute: '/',
+      initialRoute: '/surveys_result/3',
       getPages: [
         GetPage(name: '/', page: makeSplashPage, transition: Transition.fade),
         GetPage(
@@ -28,7 +28,8 @@ class App extends StatelessWidget {
         GetPage(
             name: '/surveys',
             page: makeSurveysPage,
-            transition: Transition.fadeIn)
+            transition: Transition.fadeIn),
+        GetPage(name: '/surveys_result/:survei_id', page: makeSurveyResultPage),
       ],
     );
   }
