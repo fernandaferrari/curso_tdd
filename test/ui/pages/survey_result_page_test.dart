@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:curso_tdd/data/model/model.dart';
 import 'package:curso_tdd/ui/helpers/helpers.dart';
 import 'package:curso_tdd/ui/pages/pages.dart';
 import 'package:flutter/material.dart';
@@ -89,5 +88,17 @@ void main() {
     expect(find.text('Algo errado aconteceu. Tente novamente em breve.'),
         findsOneWidget);
     expect(find.text('Recarregar'), findsOneWidget);
+  });
+
+  testWidgets('Should call LoadSurveys on reload button click ...',
+      (tester) async {
+    await loadPage(tester);
+
+    surveyResultController.addError(UIError.unexpected.description);
+    await tester.pump();
+
+    await tester.tap(find.text('Recarregar'));
+
+    verify(presenter.loadData()).called(2);
   });
 }
