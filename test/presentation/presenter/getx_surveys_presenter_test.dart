@@ -32,7 +32,7 @@ void main() {
 
   void mockLoadSurveys(List<SurveyEntity> data) {
     surveys = data;
-    mockLoadCall().thenAnswer((_) async => data);
+    mockLoadCall().thenAnswer((_) async => surveys);
   }
 
   void mockLoadSurveysError() =>
