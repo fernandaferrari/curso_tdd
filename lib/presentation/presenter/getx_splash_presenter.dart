@@ -2,8 +2,11 @@ import 'package:curso_tdd/presentation/mixins/mixins.dart';
 import 'package:meta/meta.dart';
 import 'package:curso_tdd/domain/usecases/usecases.dart';
 import 'package:curso_tdd/ui/pages/pages.dart';
+import 'package:get/get.dart';
 
-class GetxSplashPresenter with NavigatorManager implements SplashPresenter {
+class GetxSplashPresenter extends GetxController
+    with NavigatorManager
+    implements SplashPresenter {
   final LoadCurrentAccount loadCurrentAccount;
   GetxSplashPresenter({
     @required this.loadCurrentAccount,

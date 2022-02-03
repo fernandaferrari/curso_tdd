@@ -17,9 +17,7 @@ class LoginPage extends StatelessWidget
     return Scaffold(
       body: Builder(builder: (context) {
         handleLoading(context, presenter.isLoadStream);
-
         handleError(context, presenter.mainErrorStream);
-
         handleNavigate(presenter.navigateToStream, clear: true);
 
         return GestureDetector(
