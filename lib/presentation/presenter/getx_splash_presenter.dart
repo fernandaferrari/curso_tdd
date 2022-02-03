@@ -1,26 +1,22 @@
-import 'package:get/get.dart';
+import 'package:curso_tdd/presentation/mixins/mixins.dart';
 import 'package:meta/meta.dart';
 import 'package:curso_tdd/domain/usecases/usecases.dart';
 import 'package:curso_tdd/ui/pages/pages.dart';
 
-class GetxSplashPresenter implements SplashPresenter {
+class GetxSplashPresenter with NavigatorManager implements SplashPresenter {
   final LoadCurrentAccount loadCurrentAccount;
   GetxSplashPresenter({
     @required this.loadCurrentAccount,
   });
-  var _navigateTo = RxString();
-
-  @override
-  Stream<String> get navigateToStream => _navigateTo.stream;
 
   @override
   Future<void> checkAccount() async {
     await Future.delayed(Duration(seconds: 2));
     try {
       final account = await loadCurrentAccount.load();
-      _navigateTo.value = account?.token == null ? '/login' : '/surveys';
+      isNavigate = account?.token == null ? '/login' : '/surveys';
     } catch (error) {
-      _navigateTo.value = '/login';
+      isNavigate = '/login';
     }
   }
 }

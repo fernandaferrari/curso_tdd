@@ -1,3 +1,4 @@
+import 'package:curso_tdd/presentation/mixins/mixins.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:meta/meta.dart';
@@ -9,26 +10,22 @@ import 'package:curso_tdd/ui/pages/surveys/surveys_view_model.dart';
 import '../../domain/helpers/helpers.dart';
 import '../../domain/usecases/usecases.dart';
 
-class GetxSurveysPresenter extends GetxController implements SurveysPresenter {
+class GetxSurveysPresenter extends GetxController
+    with LoadingManager, SessionManager, NavigatorManager
+    implements SurveysPresenter {
   final LoadSurveys loadSurveysStream;
 
   GetxSurveysPresenter({
     @required this.loadSurveysStream,
   });
 
-  final _isLoad = true.obs;
   final _surveys = Rx<List<SurveysViewModel>>();
-  var _navigateTo = RxString();
-  final _isSessionExpired = RxBool();
 
-  Stream<bool> get isLoadStream => _isLoad.stream;
   Stream<List<SurveysViewModel>> get surveysStream => _surveys.stream;
-  Stream<String> get navigateToStream => _navigateTo.stream;
-  Stream<bool> get isSessionExpiredStream => _isSessionExpired.stream;
 
   Future<void> loadData() async {
     try {
-      _isLoad.value = true;
+      isLoading = true;
       final surveys = await loadSurveysStream.load();
       _surveys.value = surveys
           .map((surveys) => SurveysViewModel(
@@ -39,17 +36,17 @@ class GetxSurveysPresenter extends GetxController implements SurveysPresenter {
           .toList();
     } on DomainError catch (error) {
       if (error == DomainError.acessDenied) {
-        _isSessionExpired.value = true;
+        isSessionExpired = true;
       } else {
         _surveys.subject.addError(UIError.unexpected.description);
       }
     } finally {
-      _isLoad.value = false;
+      isLoading = false;
     }
   }
 
   @override
   void goToSurveyResult(String id) {
-    _navigateTo.value = '/survey_result/$id';
+    isNavigate = '/survey_result/$id';
   }
 }
