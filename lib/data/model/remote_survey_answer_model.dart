@@ -30,6 +30,7 @@ class RemoteSurveyAnswerModel {
   }
 
   SurveyAnswerEntity toEntity() => SurveyAnswerEntity(
+      image: image,
       answer: answer,
       isCurrentAnswer: isCurrentAccountAnswer,
       percent: percent);
