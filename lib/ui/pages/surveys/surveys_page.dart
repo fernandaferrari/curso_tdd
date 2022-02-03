@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:meta/meta.dart';
+import 'package:curso_tdd/ui/mixins/mixins.dart';
 
 import 'package:curso_tdd/ui/components/components.dart';
 import 'package:curso_tdd/ui/helpers/helpers.dart';
@@ -9,7 +9,8 @@ import 'package:curso_tdd/ui/pages/surveys/surveys_presenter.dart';
 import 'package:curso_tdd/ui/pages/surveys/surveys_view_model.dart';
 import 'package:provider/provider.dart';
 
-class SurveysPage extends StatelessWidget {
+class SurveysPage extends StatelessWidget
+    with LoadingManager, NavigateManager, SessionManager {
   final SurveysPresenter presenter;
   const SurveysPage({
     Key key,
@@ -23,25 +24,11 @@ class SurveysPage extends StatelessWidget {
         title: Center(child: Text(R.strings.surveys)),
       ),
       body: Builder(builder: (context) {
-        presenter.isLoadStream.listen((isLoading) {
-          if (isLoading == true) {
-            showLoading(context);
-          } else {
-            hideLoading(context);
-          }
-        });
+        handleLoading(context, presenter.isLoadStream);
 
-        presenter.isSessionExpiredStream.listen((isExpired) {
-          if (isExpired == true) {
-            Get.offAllNamed('/login');
-          }
-        });
+        handleSessionExpired(context, presenter.isSessionExpiredStream);
 
-        presenter.navigateToStream.listen((page) {
-          if (page?.isNotEmpty == true) {
-            Get.toNamed(page);
-          }
-        });
+        handleNavigate(context, presenter.navigateToStream);
 
         presenter.loadData();
         return StreamBuilder<List<SurveysViewModel>>(

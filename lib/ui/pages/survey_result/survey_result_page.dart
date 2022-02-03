@@ -2,14 +2,15 @@ import 'package:curso_tdd/ui/components/components.dart';
 import 'package:curso_tdd/ui/pages/pages.dart';
 import 'package:curso_tdd/ui/pages/survey_result/survey_result_presenter.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:meta/meta.dart';
+import 'package:curso_tdd/ui/mixins/mixins.dart';
 
 import 'package:curso_tdd/ui/helpers/helpers.dart';
 
 import 'components/components.dart';
 
-class SurveyResultPage extends StatelessWidget {
+class SurveyResultPage extends StatelessWidget
+    with LoadingManager, SessionManager {
   final SurveyResultPresenter presenter;
 
   const SurveyResultPage({Key key, @required this.presenter}) : super(key: key);
@@ -21,19 +22,9 @@ class SurveyResultPage extends StatelessWidget {
         title: Center(child: Text(R.strings.surveys)),
       ),
       body: Builder(builder: (ctx) {
-        presenter.isLoadStream.listen((isLoading) {
-          if (isLoading == true) {
-            showLoading(context);
-          } else {
-            hideLoading(context);
-          }
-        });
+        handleLoading(context, presenter.isLoadStream);
 
-        presenter.isSessionExpiredStream.listen((isExpired) {
-          if (isExpired == true) {
-            Get.offAllNamed('/login');
-          }
-        });
+        handleSessionExpired(context, presenter.isSessionExpiredStream);
 
         presenter.loadData();
 
