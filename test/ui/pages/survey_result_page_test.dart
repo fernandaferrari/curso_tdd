@@ -15,21 +15,27 @@ void main() {
   SurveyResultPresenterSpy presenter;
   StreamController<bool> isLoadController;
   StreamController<SurveysResultViewModel> surveyResultController;
+  StreamController<bool> isSessionExpiredController;
 
   void initStreams() {
     isLoadController = StreamController<bool>();
     surveyResultController = StreamController<SurveysResultViewModel>();
+
+    isSessionExpiredController = StreamController<bool>();
   }
 
   void mockStreams() {
     when(presenter.isLoadStream).thenAnswer((_) => isLoadController.stream);
     when(presenter.surveysResultStream)
         .thenAnswer((_) => surveyResultController.stream);
+    when(presenter.isSessionExpiredStream)
+        .thenAnswer((_) => isSessionExpiredController.stream);
   }
 
   void closeStreams() {
     isLoadController.close();
     surveyResultController.close();
+    isSessionExpiredController.close();
   }
 
   Future<void> loadPage(WidgetTester tester) async {
@@ -45,7 +51,12 @@ void main() {
             name: '/survey_result/:survey_id',
             page: () => SurveyResultPage(
                   presenter: presenter,
-                ))
+                )),
+        GetPage(
+            name: '/login',
+            page: () => Scaffold(
+                  body: Text('fake login'),
+                )),
       ],
     );
     await provideMockedNetworkImages(() async {
@@ -63,7 +74,10 @@ void main() {
                 isCurrentAnswer: true,
                 percent: '60%'),
             SurveyAnswerViewModel(
-                answer: 'Answer 1', isCurrentAnswer: false, percent: '40%')
+                image: null,
+                answer: 'Answer 1',
+                isCurrentAnswer: false,
+                percent: '40%')
           ]);
 
   tearDown(() {

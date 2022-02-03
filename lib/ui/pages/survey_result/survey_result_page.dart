@@ -2,6 +2,7 @@ import 'package:curso_tdd/ui/components/components.dart';
 import 'package:curso_tdd/ui/pages/pages.dart';
 import 'package:curso_tdd/ui/pages/survey_result/survey_result_presenter.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:meta/meta.dart';
 
 import 'package:curso_tdd/ui/helpers/helpers.dart';
@@ -25,6 +26,12 @@ class SurveyResultPage extends StatelessWidget {
             showLoading(context);
           } else {
             hideLoading(context);
+          }
+        });
+
+        presenter.isSessionExpiredStream.listen((isExpired) {
+          if (isExpired == true) {
+            Get.offAllNamed('/login');
           }
         });
 

@@ -73,6 +73,7 @@ void main() {
                     isCurrentAnswer: surveys.answers[0].isCurrentAnswer,
                     percent: '${surveys.answers[0].percent}'),
                 SurveyAnswerViewModel(
+                    image: null,
                     answer: surveys.answers[1].answer,
                     isCurrentAnswer: surveys.answers[1].isCurrentAnswer,
                     percent: '${surveys.answers[1].percent}')

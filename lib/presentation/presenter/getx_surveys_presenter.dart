@@ -19,10 +19,12 @@ class GetxSurveysPresenter extends GetxController implements SurveysPresenter {
   final _isLoad = true.obs;
   final _surveys = Rx<List<SurveysViewModel>>();
   var _navigateTo = RxString();
+  final _isSessionExpired = RxBool();
 
   Stream<bool> get isLoadStream => _isLoad.stream;
   Stream<List<SurveysViewModel>> get surveysStream => _surveys.stream;
   Stream<String> get navigateToStream => _navigateTo.stream;
+  Stream<bool> get isSessionExpiredStream => _isSessionExpired.stream;
 
   Future<void> loadData() async {
     try {
