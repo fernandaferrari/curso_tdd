@@ -20,7 +20,7 @@ class LoginPage extends StatelessWidget
 
         handleError(context, presenter.mainErrorStream);
 
-        handleNavigate(context, presenter.navigateToStream);
+        handleNavigate(presenter.navigateToStream, clear: true);
 
         return GestureDetector(
           onTap: () => hideKeyboard(context),

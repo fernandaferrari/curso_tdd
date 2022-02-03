@@ -24,7 +24,7 @@ class SurveyResultPage extends StatelessWidget
       body: Builder(builder: (ctx) {
         handleLoading(context, presenter.isLoadStream);
 
-        handleSessionExpired(context, presenter.isSessionExpiredStream);
+        handleSessionExpired(presenter.isSessionExpiredStream);
 
         presenter.loadData();
 

@@ -1,6 +1,6 @@
+import 'package:curso_tdd/ui/mixins/mixins.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
-import 'package:curso_tdd/ui/mixins/mixins.dart';
 
 import 'package:curso_tdd/ui/components/components.dart';
 import 'package:curso_tdd/ui/helpers/helpers.dart';
@@ -26,9 +26,9 @@ class SurveysPage extends StatelessWidget
       body: Builder(builder: (context) {
         handleLoading(context, presenter.isLoadStream);
 
-        handleSessionExpired(context, presenter.isSessionExpiredStream);
+        handleSessionExpired(presenter.isSessionExpiredStream);
 
-        handleNavigate(context, presenter.navigateToStream);
+        handleNavigate(presenter.navigateToStream, clear: true);
 
         presenter.loadData();
         return StreamBuilder<List<SurveysViewModel>>(
