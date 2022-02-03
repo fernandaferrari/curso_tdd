@@ -39,8 +39,12 @@ class GetxSurveyResultPresenter extends GetxController
                   isCurrentAnswer: answer.isCurrentAnswer,
                   percent: '${answer.percent}'))
               .toList());
-    } on DomainError {
-      _surveysResult.subject.addError(UIError.unexpected.description);
+    } on DomainError catch (error) {
+      if (error == DomainError.acessDenied) {
+        _isSessionExpired.value = true;
+      } else {
+        _surveysResult.subject.addError(UIError.unexpected.description);
+      }
     } finally {
       _isLoad.value = false;
     }
