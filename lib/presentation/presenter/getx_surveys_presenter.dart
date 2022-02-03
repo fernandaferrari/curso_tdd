@@ -18,9 +18,11 @@ class GetxSurveysPresenter extends GetxController implements SurveysPresenter {
 
   final _isLoad = true.obs;
   final _surveys = Rx<List<SurveysViewModel>>();
+  var _navigateTo = RxString();
 
   Stream<bool> get isLoadStream => _isLoad.stream;
   Stream<List<SurveysViewModel>> get surveysStream => _surveys.stream;
+  Stream<String> get navigateToStream => _navigateTo.stream;
 
   Future<void> loadData() async {
     try {
@@ -38,5 +40,10 @@ class GetxSurveysPresenter extends GetxController implements SurveysPresenter {
     } finally {
       _isLoad.value = false;
     }
+  }
+
+  @override
+  void goToSurveyResult(String id) {
+    _navigateTo.value = '/survey_result/$id';
   }
 }
