@@ -5,10 +5,13 @@ import 'package:curso_tdd/data/http/http.dart';
 
 class AuthorizeHttpClientDecorator implements IHttpClient {
   final FetchSecureCacheStorage fetchSecureCacheStorage;
+  final DeleteSecureCacheStorage deleteSecureCacheStorage;
   final IHttpClient decoratee;
 
   AuthorizeHttpClientDecorator(
-      {@required this.fetchSecureCacheStorage, @required this.decoratee});
+      {@required this.fetchSecureCacheStorage,
+      @required this.deleteSecureCacheStorage,
+      @required this.decoratee});
 
   Future<dynamic> request(
       {@required String url,
@@ -21,10 +24,13 @@ class AuthorizeHttpClientDecorator implements IHttpClient {
         ..addAll({'x-access-token': token});
       return await decoratee.request(
           url: url, method: method, body: body, headers: authorizedHeaders);
-    } on HttpError {
-      rethrow;
     } catch (error) {
-      throw HttpError.forbidden;
+      if (error is HttpError && error != HttpError.forbidden) {
+        rethrow;
+      } else {
+        await deleteSecureCacheStorage.deleteSecure('token');
+        throw HttpError.forbidden;
+      }
     }
   }
 }
