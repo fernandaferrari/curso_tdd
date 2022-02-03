@@ -22,12 +22,11 @@ void main() {
 
   test('Should call SaveSecureCacheStorage with correct values', () async {
     await sut.save(account);
-    verify(cacheStorage.saveSecure(key: 'token', value: account.token));
+    verify(cacheStorage.save(key: 'token', value: account.token));
   });
 
   test('Should throw UnexpectedError SaveSecureCacheStorage throws', () async {
-    when(cacheStorage.saveSecure(
-            key: anyNamed('key'), value: anyNamed('value')))
+    when(cacheStorage.save(key: anyNamed('key'), value: anyNamed('value')))
         .thenThrow(Exception());
 
     final future = sut.save(account);

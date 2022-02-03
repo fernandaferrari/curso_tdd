@@ -15,8 +15,8 @@ class DeleteSecureCacheStorageSpy extends Mock
 class HttpClientSpy extends Mock implements IHttpClient {}
 
 void main() {
-  FetchSecureCacheStorageSpy fetchSecure;
-  DeleteSecureCacheStorageSpy deleteSecure;
+  FetchSecureCacheStorageSpy fetch;
+  DeleteSecureCacheStorageSpy delete;
   AuthorizeHttpClientDecorator sut;
   HttpClientSpy httpClient;
   String url;
@@ -25,7 +25,7 @@ void main() {
   String token;
   String httpResponse;
 
-  PostExpectation mockTokenCall() => when(fetchSecure.fetchSecure(any));
+  PostExpectation mockTokenCall() => when(fetch.fetch(any));
 
   void mockToken() {
     token = faker.guid.guid();
@@ -51,11 +51,11 @@ void main() {
 
   setUp(() {
     httpClient = HttpClientSpy();
-    fetchSecure = FetchSecureCacheStorageSpy();
-    deleteSecure = DeleteSecureCacheStorageSpy();
+    fetch = FetchSecureCacheStorageSpy();
+    delete = DeleteSecureCacheStorageSpy();
     sut = AuthorizeHttpClientDecorator(
-        fetchSecureCacheStorage: fetchSecure,
-        deleteSecureCacheStorage: deleteSecure,
+        fetchSecureCacheStorage: fetch,
+        deleteSecureCacheStorage: delete,
         decoratee: httpClient);
     url = faker.internet.httpUrl();
     method = faker.randomGenerator.string(10);
@@ -66,7 +66,7 @@ void main() {
   test('Should call FetchSecureCacheStorage with correct key', () async {
     await sut.request(method: method, url: url, body: body);
 
-    verify(fetchSecure.fetchSecure('token')).called(1);
+    verify(fetch.fetch('token')).called(1);
   });
 
   test('Should call decoratee with access token on header', () async {
@@ -104,7 +104,7 @@ void main() {
     final future = sut.request(method: method, url: url, body: body);
 
     expect(future, throwsA(HttpError.forbidden));
-    verify(deleteSecure.deleteSecure('token')).called(1);
+    verify(delete.delete('token')).called(1);
   });
 
   test('Should rethrows if decoratee throws', () async {
@@ -118,9 +118,9 @@ void main() {
     mockHttpResponseError(HttpError.forbidden);
     final future = sut.request(method: method, url: url, body: body);
 
-    await untilCalled(deleteSecure.deleteSecure('token'));
+    await untilCalled(delete.delete('token'));
 
     expect(future, throwsA(HttpError.forbidden));
-    verify(deleteSecure.deleteSecure('token')).called(1);
+    verify(delete.delete('token')).called(1);
   });
 }
