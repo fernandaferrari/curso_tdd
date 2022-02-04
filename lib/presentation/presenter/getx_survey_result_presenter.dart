@@ -48,7 +48,7 @@ class GetxSurveyResultPresenter extends GetxController
                   image: answer.image,
                   answer: answer.answer,
                   isCurrentAnswer: answer.isCurrentAnswer,
-                  percent: '${answer.percent}'))
+                  percent: '${answer.percent}%'))
               .toList());
     } on DomainError catch (error) {
       if (error == DomainError.acessDenied) {

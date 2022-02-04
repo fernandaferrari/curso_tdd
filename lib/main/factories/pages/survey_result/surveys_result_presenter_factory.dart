@@ -6,4 +6,5 @@ SurveyResultPresenter makeGetxSurveyResultPresenter(String surveyId) =>
     GetxSurveyResultPresenter(
         loadSurveyResultStream:
             makeRemoteLoadSurveyResultWithLocalFallback(surveyId),
+        saveSurveyResult: makeRemoteSaveSurveyResult(surveyId),
         surveyId: surveyId);

@@ -79,18 +79,19 @@ void main() {
 
     await sut.loadData();
   });
-
-  test('Should go to SurveyResultPage on survey click', () async {
-    sut.navigateToStream
-        .listen(expectAsync1((page) => expect(page, '/survey_result/1')));
-    sut.goToSurveyResult('1');
-  });
-
   test('Should emit correct events on access denied', () async {
     mockAccessDeniedError();
     expectLater(sut.isLoadStream, emitsInOrder([true, false]));
     expectLater(sut.isSessionExpiredStream, emits(true));
 
     await sut.loadData();
+  });
+
+  test('Should go to SurveyResultPage on survey click', () async {
+    expectLater(sut.navigateToStream,
+        emitsInOrder(['/survey_result/1', '/survey_result/1']));
+
+    sut.goToSurveyResult('1');
+    sut.goToSurveyResult('1');
   });
 }
