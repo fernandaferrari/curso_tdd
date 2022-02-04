@@ -1,6 +1,7 @@
 import 'package:curso_tdd/data/usercases/load_surveys_result/load_surveys_result.dart';
 import 'package:curso_tdd/domain/entities/survey_answer_entity.dart';
 import 'package:curso_tdd/domain/entities/survey_result_entity.dart';
+import 'package:curso_tdd/domain/helpers/helpers.dart';
 import 'package:curso_tdd/domain/usecases/usecases.dart';
 import 'package:faker/faker.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -19,9 +20,13 @@ class RemoteLoadSurveyResultWithLocalFallback implements LoadSurveyResult {
 
   @override
   Future<SurveyResultEntity> loadBySurvey({String surveyId}) async {
-    final surveyResult = await remote.loadBySurvey(surveyId: surveyId);
-    await local.save(surveyResult: surveyResult);
-    return surveyResult;
+    try {
+      final surveyResult = await remote.loadBySurvey(surveyId: surveyId);
+      await local.save(surveyResult: surveyResult);
+      return surveyResult;
+    } catch (error) {
+      throw DomainError.acessDenied;
+    }
   }
 }
 
@@ -47,11 +52,17 @@ void main() {
                 percent: 60)
           ]);
 
+  PostExpectation mockRemoteResultCall() =>
+      when(remote.loadBySurvey(surveyId: anyNamed('surveyId')));
+
   void mockSurveyResult(SurveyResultEntity data) {
     surveyResult = data;
-    when(remote.loadBySurvey(surveyId: anyNamed('surveyId')))
-        .thenAnswer((_) async => surveyResult);
+
+    mockRemoteResultCall().thenAnswer((_) async => surveyResult);
   }
+
+  void mockRemoteError(DomainError error) =>
+      mockRemoteResultCall().thenThrow(error);
 
   setUp(() {
     remote = RemoteLoadSurveysResultSpy();
@@ -72,5 +83,13 @@ void main() {
     final response = await sut.loadBySurvey(surveyId: surveyResult.surveyId);
 
     expect(response, surveyResult);
+  });
+
+  test('Should rethrow if remote LoadBySurveys AccessDenied error', () async {
+    mockRemoteError(DomainError.acessDenied);
+
+    final future = sut.loadBySurvey(surveyId: surveyResult.surveyId);
+
+    expect(future, throwsA(DomainError.acessDenied));
   });
 }
