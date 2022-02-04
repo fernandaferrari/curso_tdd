@@ -1,5 +1,6 @@
 import 'package:curso_tdd/ui/mixins/mixins.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:meta/meta.dart';
 
 import 'package:curso_tdd/ui/components/components.dart';
@@ -9,8 +10,7 @@ import 'package:curso_tdd/ui/pages/surveys/surveys_presenter.dart';
 import 'package:curso_tdd/ui/pages/surveys/surveys_view_model.dart';
 import 'package:provider/provider.dart';
 
-class SurveysPage extends StatelessWidget
-    with LoadingManager, NavigateManager, SessionManager {
+class SurveysPage extends StatefulWidget {
   final SurveysPresenter presenter;
   const SurveysPage({
     Key key,
@@ -18,37 +18,55 @@ class SurveysPage extends StatelessWidget
   }) : super(key: key);
 
   @override
+  _SurveysPageState createState() => _SurveysPageState();
+}
+
+class _SurveysPageState extends State<SurveysPage>
+    with LoadingManager, NavigateManager, SessionManager, RouteAware {
+  @override
   Widget build(BuildContext context) {
+    Get.find<RouteObserver>().subscribe(this, ModalRoute.of(context));
     return Scaffold(
       appBar: AppBar(
         title: Center(child: Text(R.strings.surveys)),
       ),
       body: Builder(builder: (context) {
-        handleLoading(context, presenter.isLoadStream);
+        handleLoading(context, widget.presenter.isLoadStream);
 
-        handleSessionExpired(presenter.isSessionExpiredStream);
+        handleSessionExpired(widget.presenter.isSessionExpiredStream);
 
-        handleNavigate(presenter.navigateToStream);
+        handleNavigate(widget.presenter.navigateToStream);
 
-        presenter.loadData();
+        widget.presenter.loadData();
         return StreamBuilder<List<SurveysViewModel>>(
-            stream: presenter.surveysStream,
+            stream: widget.presenter.surveysStream,
             builder: (context, snapshot) {
               if (snapshot.hasError) {
                 return ReloadScreen(
                   error: snapshot.error,
-                  reload: presenter.loadData,
+                  reload: widget.presenter.loadData,
                 );
               }
 
               if (snapshot.hasData) {
                 return Provider(
-                    create: (_) => presenter,
+                    create: (_) => widget.presenter,
                     child: SurveyItems(data: snapshot.data));
               }
               return SizedBox(height: 0);
             });
       }),
     );
+  }
+
+  @override
+  void didPopNext() {
+    widget.presenter.loadData();
+  }
+
+  @override
+  void dispose() {
+    Get.find<RouteObserver>().unsubscribe(this);
+    super.dispose();
   }
 }
