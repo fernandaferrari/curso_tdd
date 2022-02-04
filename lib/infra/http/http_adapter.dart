@@ -29,6 +29,10 @@ class HttpAdapter implements IHttpClient {
         response = await client
             .get(url, headers: defaultHeaders)
             .timeout(Duration(seconds: 5));
+      } else if (method == 'put') {
+        response = await client
+            .put(url, headers: defaultHeaders, body: jsonBody)
+            .timeout(Duration(seconds: 5));
       }
     } catch (error) {
       throw HttpError.serverError;
