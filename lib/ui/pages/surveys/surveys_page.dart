@@ -28,7 +28,7 @@ class SurveysPage extends StatelessWidget
 
         handleSessionExpired(presenter.isSessionExpiredStream);
 
-        handleNavigate(presenter.navigateToStream, clear: true);
+        handleNavigate(presenter.navigateToStream);
 
         presenter.loadData();
         return StreamBuilder<List<SurveysViewModel>>(

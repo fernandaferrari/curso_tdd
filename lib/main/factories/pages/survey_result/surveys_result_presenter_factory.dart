@@ -4,5 +4,6 @@ import 'package:curso_tdd/ui/pages/pages.dart';
 
 SurveyResultPresenter makeGetxSurveyResultPresenter(String surveyId) =>
     GetxSurveyResultPresenter(
-        loadSurveyResultStream: makeLoadSurveyResult(surveyId),
+        loadSurveyResultStream:
+            makeRemoteLoadSurveyResultWithLocalFallback(surveyId),
         surveyId: surveyId);
