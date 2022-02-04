@@ -2,7 +2,7 @@ import 'package:curso_tdd/data/usercases/load_surveys_result/load_surveys_result
 import 'package:curso_tdd/domain/entities/survey_answer_entity.dart';
 import 'package:curso_tdd/domain/entities/survey_result_entity.dart';
 import 'package:curso_tdd/domain/helpers/helpers.dart';
-import 'package:curso_tdd/domain/usecases/usecases.dart';
+import 'package:curso_tdd/main/composites/composites.dart';
 import 'package:faker/faker.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
@@ -11,29 +11,6 @@ class RemoteLoadSurveysResultSpy extends Mock
     implements RemoteLoadSurveysResult {}
 
 class LocalLoadSurveyResultSpy extends Mock implements LocalLoadSurveyResult {}
-
-class RemoteLoadSurveyResultWithLocalFallback implements LoadSurveyResult {
-  final RemoteLoadSurveysResult remote;
-  final LocalLoadSurveyResult local;
-
-  RemoteLoadSurveyResultWithLocalFallback({this.remote, this.local});
-
-  @override
-  Future<SurveyResultEntity> loadBySurvey({String surveyId}) async {
-    try {
-      final surveyResult = await remote.loadBySurvey(surveyId: surveyId);
-      await local.save(surveyResult: surveyResult);
-      return surveyResult;
-    } catch (error) {
-      if (error == DomainError.acessDenied) {
-        rethrow;
-      } else {
-        await local.validate(surveyId);
-        return await local.loadBySurvey(surveyId: surveyId);
-      }
-    }
-  }
-}
 
 void main() {
   RemoteLoadSurveysResultSpy remote;
