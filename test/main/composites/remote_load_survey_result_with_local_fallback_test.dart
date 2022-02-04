@@ -25,7 +25,12 @@ class RemoteLoadSurveyResultWithLocalFallback implements LoadSurveyResult {
       await local.save(surveyResult: surveyResult);
       return surveyResult;
     } catch (error) {
-      throw DomainError.acessDenied;
+      if (error == DomainError.acessDenied) {
+        rethrow;
+      } else {
+        await local.validate(surveyId);
+        await local.loadBySurvey(surveyId: surveyId);
+      }
     }
   }
 }
@@ -91,5 +96,14 @@ void main() {
     final future = sut.loadBySurvey(surveyId: surveyResult.surveyId);
 
     expect(future, throwsA(DomainError.acessDenied));
+  });
+
+  test('Should call local LoadBySurvey on remote error', () async {
+    mockRemoteError(DomainError.unexpected);
+
+    await sut.loadBySurvey(surveyId: surveyResult.surveyId);
+
+    verify(local.validate(surveyResult.surveyId)).called(1);
+    verify(local.loadBySurvey(surveyId: surveyResult.surveyId)).called(1);
   });
 }
