@@ -1,37 +1,13 @@
-import 'package:curso_tdd/data/model/model.dart';
+import 'package:curso_tdd/data/usercases/save_survey_result/save_surveys_result.dart';
 import 'package:curso_tdd/domain/entities/entities.dart';
 import 'package:curso_tdd/domain/helpers/helpers.dart';
-import 'package:curso_tdd/domain/usecases/save_survey_result.dart';
 import 'package:faker/faker.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:meta/meta.dart';
 
 import 'package:curso_tdd/data/http/http.dart';
 
 class HttpClientSpy extends Mock implements IHttpClient {}
-
-class RemoteSaveSurveyResult implements SaveSurveyResult {
-  final IHttpClient httpClient;
-  final String url;
-
-  RemoteSaveSurveyResult({
-    @required this.httpClient,
-    @required this.url,
-  });
-
-  Future<SurveyResultEntity> save({String answer}) async {
-    try {
-      final json = await httpClient
-          .request(url: url, method: 'put', body: {'answer': answer});
-      return RemoteSurveyResultModel.fromJson(json).toEntity();
-    } on HttpError catch (error) {
-      throw error == HttpError.forbidden
-          ? DomainError.acessDenied
-          : DomainError.unexpected;
-    }
-  }
-}
 
 void main() {
   RemoteSaveSurveyResult sut;
