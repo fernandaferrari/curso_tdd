@@ -213,4 +213,71 @@ void main() {
       verify(cacheStorage.delete('survey_result/$surveyId')).called(1);
     });
   });
+
+  group('save', () {
+    CacheStorageSpy cacheStorage;
+    LocalLoadSurveyResult sut;
+    SurveyResultEntity surveyResult;
+
+    SurveyResultEntity mockSurveys() => SurveyResultEntity(
+            surveyId: faker.guid.guid(),
+            question: faker.lorem.sentence(),
+            answers: [
+              SurveyAnswerEntity(
+                  image: faker.internet.httpUrl(),
+                  answer: faker.lorem.sentence(),
+                  isCurrentAnswer: true,
+                  percent: 40),
+              SurveyAnswerEntity(
+                  image: null,
+                  answer: faker.lorem.sentence(),
+                  isCurrentAnswer: false,
+                  percent: 60)
+            ]);
+
+    PostExpectation mockSaveCall() =>
+        when(cacheStorage.save(key: anyNamed("key"), value: anyNamed("value")));
+
+    void mockSaveError() => mockSaveCall().thenThrow(Exception());
+
+    setUp(() {
+      cacheStorage = CacheStorageSpy();
+      sut = LocalLoadSurveyResult(cacheStorage: cacheStorage);
+      surveyResult = mockSurveys();
+    });
+
+    test('Should throw UnexpectedError if save throws', () async {
+      final json = {
+        'surveyId': surveyResult.surveyId,
+        'question': surveyResult.question,
+        'answers': [
+          {
+            'image': surveyResult.answers[0].image,
+            'answer': surveyResult.answers[0].answer,
+            'percent': '40',
+            'isCurrentAnswer': 'true'
+          },
+          {
+            'image': null,
+            'answer': surveyResult.answers[1].answer,
+            'percent': '60',
+            'isCurrentAnswer': 'false'
+          }
+        ],
+      };
+
+      await sut.save(surveyResult: surveyResult);
+
+      verify(cacheStorage.save(
+              key: "survey_result/${surveyResult.surveyId}", value: json))
+          .called(1);
+    });
+
+    test('Should call cacheStorage with correct values', () async {
+      mockSaveError();
+
+      final furute = sut.save(surveyResult: surveyResult);
+      expect(furute, throwsA(DomainError.unexpected));
+    });
+  });
 }
