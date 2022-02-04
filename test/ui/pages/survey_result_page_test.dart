@@ -155,4 +155,18 @@ void main() {
         tester.widget<Image>(find.byType(Image)).image as NetworkImage;
     expect(image.url, 'Image 0');
   });
+
+  testWidgets('Should call save on list item click ...', (tester) async {
+    await loadPage(tester);
+
+    surveyResultController.add(makeSurveyResult());
+
+    await provideMockedNetworkImages(() async {
+      await tester.pump();
+    });
+
+    await tester.tap(find.text('Answer 1'));
+
+    verify(presenter.save(answer: 'Answer 1')).called(1);
+  });
 }
