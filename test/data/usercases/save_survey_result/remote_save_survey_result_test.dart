@@ -1,3 +1,4 @@
+import 'package:curso_tdd/domain/helpers/helpers.dart';
 import 'package:faker/faker.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
@@ -17,7 +18,14 @@ class RemoteSaveSurveyResult {
   });
 
   Future<void> save({String answer}) async {
-    await httpClient.request(url: url, method: 'put', body: {'answer': answer});
+    try {
+      await httpClient
+          .request(url: url, method: 'put', body: {'answer': answer});
+    } on HttpError catch (error) {
+      throw error == HttpError.forbidden
+          ? DomainError.acessDenied
+          : DomainError.unexpected;
+    }
   }
 }
 
@@ -26,6 +34,14 @@ void main() {
   HttpClientSpy httpClient;
   String url;
   String answer;
+
+  PostExpectation mockRequestCall() => when(httpClient.request(
+      url: anyNamed("url"),
+      method: anyNamed("method"),
+      body: anyNamed("body"),
+      headers: anyNamed("headers")));
+
+  void mockHttpError(HttpError error) => mockRequestCall().thenThrow(error);
 
   setUp(() {
     answer = faker.lorem.sentence();
@@ -39,5 +55,31 @@ void main() {
 
     verify(
         httpClient.request(url: url, method: 'put', body: {'answer': answer}));
+  });
+
+  test('Quando ocorrer um erro inesperado pelo HttpClient returns 404',
+      () async {
+    mockHttpError(HttpError.notFound);
+
+    final future = sut.save(answer: answer);
+    expect(future, throwsA(DomainError.unexpected));
+  });
+
+  test('Quando ocorrer um erro inesperado pelo HttpClient returns 500',
+      () async {
+    mockHttpError(HttpError.serverError);
+
+    final future = sut.save(answer: answer);
+
+    expect(future, throwsA(DomainError.unexpected));
+  });
+
+  test('Quando ocorrer um erro AccessDeniedError pelo HttpClient returns 403',
+      () async {
+    mockHttpError(HttpError.forbidden);
+
+    final future = sut.save(answer: answer);
+
+    expect(future, throwsA(DomainError.acessDenied));
   });
 }
