@@ -1,11 +1,11 @@
 import 'package:curso_tdd/data/usercases/load_surveys_result/load_surveys_result.dart';
-import 'package:curso_tdd/domain/entities/survey_answer_entity.dart';
 import 'package:curso_tdd/domain/entities/survey_result_entity.dart';
 import 'package:curso_tdd/domain/helpers/helpers.dart';
 import 'package:curso_tdd/main/composites/composites.dart';
-import 'package:faker/faker.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+
+import '../../mocks/mocks.dart';
 
 class RemoteLoadSurveysResultSpy extends Mock
     implements RemoteLoadSurveysResult {}
@@ -19,29 +19,13 @@ void main() {
   SurveyResultEntity remoteResult;
   SurveyResultEntity localResult;
 
-  mockSurveyData() => SurveyResultEntity(
-          surveyId: faker.guid.guid(),
-          question: faker.lorem.sentence(),
-          answers: [
-            SurveyAnswerEntity(
-                image: faker.internet.httpUrl(),
-                answer: faker.lorem.sentence(),
-                isCurrentAnswer: true,
-                percent: 40),
-            SurveyAnswerEntity(
-                image: null,
-                answer: faker.lorem.sentence(),
-                isCurrentAnswer: false,
-                percent: 60)
-          ]);
-
   PostExpectation mockRemoteResultCall() =>
       when(remote.loadBySurvey(surveyId: anyNamed('surveyId')));
 
   void mockSurveyResult(SurveyResultEntity data) {
     remoteResult = data;
 
-    mockRemoteResultCall().thenAnswer((_) async => localResult);
+    mockRemoteResultCall().thenAnswer((_) async => remoteResult);
   }
 
   void mockRemoteError(DomainError error) =>
@@ -53,7 +37,7 @@ void main() {
   void mockLocalSurveyResult(SurveyResultEntity data) {
     localResult = data;
 
-    mockLoadResultCall().thenAnswer((_) async => remoteResult);
+    mockLoadResultCall().thenAnswer((_) async => localResult);
   }
 
   void mockLocalError() =>
@@ -63,8 +47,8 @@ void main() {
     remote = RemoteLoadSurveysResultSpy();
     local = LocalLoadSurveyResultSpy();
     sut = RemoteLoadSurveyResultWithLocalFallback(remote: remote, local: local);
-    mockSurveyResult(mockSurveyData());
-    mockLocalSurveyResult(mockSurveyData());
+    mockSurveyResult(FakeSurveyResultFactory.makeSurveyResultEntity());
+    mockLocalSurveyResult(FakeSurveyResultFactory.makeSurveyResultEntity());
   });
 
   test('Should call remote loadBySurvey and local save with remote data',
@@ -72,6 +56,11 @@ void main() {
     await sut.loadBySurvey(surveyId: remoteResult.surveyId);
 
     verify(remote.loadBySurvey(surveyId: remoteResult.surveyId)).called(1);
+  });
+
+  test('Should call local save with remote data', () async {
+    await sut.loadBySurvey(surveyId: remoteResult.surveyId);
+
     verify(local.save(surveyResult: remoteResult)).called(1);
   });
 

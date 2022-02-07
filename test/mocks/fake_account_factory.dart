@@ -1,3 +1,4 @@
+import 'package:curso_tdd/domain/entities/entities.dart';
 import 'package:faker/faker.dart';
 
 class FakeAccountFactory {
@@ -5,4 +6,7 @@ class FakeAccountFactory {
         'accessToken': faker.guid.guid(),
         'name': faker.person.name(),
       };
+
+  static AccountEntity makeEntities() =>
+      AccountEntity(token: faker.guid.guid());
 }

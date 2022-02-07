@@ -13,7 +13,7 @@ class SurveysResultViewModel extends Equatable {
   });
 
   @override
-  List<Object> get props => ['surveyId', 'question', 'answers'];
+  List<Object> get props => [surveyId, question, answers];
 }
 
 class SurveyAnswerViewModel extends Equatable {
@@ -30,5 +30,5 @@ class SurveyAnswerViewModel extends Equatable {
   });
 
   @override
-  List<Object> get props => ['image', 'answer', 'isCurrentAnswer', 'percent'];
+  List<Object> get props => [image, answer, isCurrentAnswer, percent];
 }

@@ -1,10 +1,11 @@
 import 'package:curso_tdd/domain/entities/entities.dart';
 import 'package:curso_tdd/presentation/presenter/presenter.dart';
-import 'package:faker/faker.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
 import 'package:curso_tdd/domain/usecases/load_current_account.dart';
+
+import '../../mocks/mocks.dart';
 
 class LoadCurrentAccountSpy extends Mock implements LoadCurrentAccount {}
 
@@ -25,7 +26,7 @@ void main() {
   setUp(() {
     loadCurrentAccount = LoadCurrentAccountSpy();
     sut = GetxSplashPresenter(loadCurrentAccount: loadCurrentAccount);
-    mockLoadCurrentAccount(account: AccountEntity(token: faker.guid.guid()));
+    mockLoadCurrentAccount(account: FakeAccountFactory.makeEntities());
   });
 
   test('Should go to surveys page on sucess', () async {

@@ -1,4 +1,5 @@
 import 'package:curso_tdd/domain/entities/entities.dart';
+import 'package:curso_tdd/ui/pages/pages.dart';
 import 'package:faker/faker.dart';
 
 class FakeSurveyResultFactory {
@@ -51,6 +52,22 @@ class FakeSurveyResultFactory {
                 answer: faker.lorem.sentence(),
                 isCurrentAnswer: false,
                 percent: 60)
+          ]);
+
+  static SurveysResultViewModel makeViewModel() => SurveysResultViewModel(
+          surveyId: 'Any id',
+          question: 'Question',
+          answers: [
+            SurveyAnswerViewModel(
+                image: 'Image 0',
+                answer: 'Answer 0',
+                isCurrentAnswer: true,
+                percent: '60%'),
+            SurveyAnswerViewModel(
+                image: null,
+                answer: 'Answer 1',
+                isCurrentAnswer: false,
+                percent: '40%')
           ]);
 
   static Map makeApiJson() => {

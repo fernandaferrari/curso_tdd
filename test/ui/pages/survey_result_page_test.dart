@@ -8,6 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:image_test_utils/image_test_utils.dart';
 import 'package:mockito/mockito.dart';
 
+import '../../mocks/mocks.dart';
 import '../helpers/helpers.dart';
 
 class SurveyResultPresenterSpy extends Mock implements SurveyResultPresenter {}
@@ -50,22 +51,6 @@ void main() {
           page: () => SurveyResultPage(presenter: presenter)));
     });
   }
-
-  SurveysResultViewModel makeSurveyResult() => SurveysResultViewModel(
-          surveyId: 'Any id',
-          question: 'Question',
-          answers: [
-            SurveyAnswerViewModel(
-                image: 'Image 0',
-                answer: 'Answer 0',
-                isCurrentAnswer: true,
-                percent: '60%'),
-            SurveyAnswerViewModel(
-                image: null,
-                answer: 'Answer 1',
-                isCurrentAnswer: false,
-                percent: '40%')
-          ]);
 
   tearDown(() {
     closeStreams();
@@ -122,7 +107,7 @@ void main() {
       (tester) async {
     await loadPage(tester);
 
-    surveyResultController.add(makeSurveyResult());
+    surveyResultController.add(FakeSurveyResultFactory.makeViewModel());
 
     await provideMockedNetworkImages(() async {
       await tester.pump();
@@ -146,7 +131,7 @@ void main() {
   testWidgets('Should call save on list item click ...', (tester) async {
     await loadPage(tester);
 
-    surveyResultController.add(makeSurveyResult());
+    surveyResultController.add(FakeSurveyResultFactory.makeViewModel());
 
     await provideMockedNetworkImages(() async {
       await tester.pump();
@@ -161,7 +146,7 @@ void main() {
       (tester) async {
     await loadPage(tester);
 
-    surveyResultController.add(makeSurveyResult());
+    surveyResultController.add(FakeSurveyResultFactory.makeViewModel());
 
     await provideMockedNetworkImages(() async {
       await tester.pump();

@@ -1,4 +1,5 @@
 import 'package:curso_tdd/domain/entities/survey_entity.dart';
+import 'package:curso_tdd/ui/pages/pages.dart';
 import 'package:faker/faker.dart';
 
 class FakeSurveysFactory {
@@ -60,5 +61,12 @@ class FakeSurveysFactory {
 
   static List<Map> makeInvalidApiJson() => [
         {'invalid_key': 'invalid_value'}
+      ];
+
+  static List<SurveysViewModel> makeViewModel() => [
+        SurveysViewModel(
+            id: '1', question: 'Question 1', date: 'Any Date', didAnswer: true),
+        SurveysViewModel(
+            id: '2', question: 'Question 2', date: 'Any Date', didAnswer: false)
       ];
 }

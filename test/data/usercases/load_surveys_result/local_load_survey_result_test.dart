@@ -54,6 +54,7 @@ void main() {
                     isCurrentAnswer: true,
                     percent: 40),
                 SurveyAnswerEntity(
+                    image: null,
                     answer: data['answers'][1]['answer'],
                     isCurrentAnswer: false,
                     percent: 60)

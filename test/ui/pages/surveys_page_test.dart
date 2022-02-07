@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
+import '../../mocks/mocks.dart';
 import '../helpers/helpers.dart';
 
 class SurveysPresenterSpy extends Mock implements SurveysPresenter {}
@@ -52,13 +53,6 @@ void main() {
     await tester.pumpWidget(makePage(
         path: '/surveys', page: () => SurveysPage(presenter: presenter)));
   }
-
-  List<SurveysViewModel> makeSurveys() => [
-        SurveysViewModel(
-            id: '1', question: 'Question 1', date: 'Any Date', didAnswer: true),
-        SurveysViewModel(
-            id: '2', question: 'Question 2', date: 'Any Date', didAnswer: false)
-      ];
 
   tearDown(() {
     closeStreams();
@@ -112,7 +106,7 @@ void main() {
       (tester) async {
     await loadPage(tester);
 
-    loadSurveysController.add(makeSurveys());
+    loadSurveysController.add(FakeSurveysFactory.makeViewModel());
     await tester.pump();
 
     expect(find.text('Algo errado aconteceu. Tente novamente em breve.'),
@@ -138,7 +132,7 @@ void main() {
   testWidgets('should call goToSurveyResult on survey click..', (tester) async {
     await loadPage(tester);
 
-    loadSurveysController.add(makeSurveys());
+    loadSurveysController.add(FakeSurveysFactory.makeViewModel());
     await tester.pump();
 
     await tester.tap(find.text('Question 1'));

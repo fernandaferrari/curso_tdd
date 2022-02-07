@@ -14,5 +14,5 @@ class SurveysViewModel extends Equatable {
   });
 
   @override
-  List<Object> get props => ['id', 'question', 'date', 'didAnswer'];
+  List<Object> get props => [id, question, date, didAnswer];
 }

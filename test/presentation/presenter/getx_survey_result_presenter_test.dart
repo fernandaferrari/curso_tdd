@@ -1,4 +1,3 @@
-import 'package:curso_tdd/domain/entities/survey_answer_entity.dart';
 import 'package:curso_tdd/domain/entities/survey_result_entity.dart';
 import 'package:curso_tdd/domain/helpers/helpers.dart';
 import 'package:curso_tdd/domain/usecases/load_survey_result.dart';
@@ -9,6 +8,8 @@ import 'package:curso_tdd/ui/pages/pages.dart';
 import 'package:faker/faker.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+
+import '../../mocks/mocks.dart';
 
 class LoadSurveysResultSpy extends Mock implements LoadSurveyResult {}
 
@@ -22,23 +23,6 @@ void main() {
   SurveyResultEntity saveResult;
   String surveyId;
   String answer;
-
-  SurveyResultEntity mockValidData() => SurveyResultEntity(
-          surveyId: faker.guid.guid(),
-          question: faker.lorem.sentence(),
-          answers: [
-            SurveyAnswerEntity(
-              image: faker.internet.httpUrl(),
-              answer: faker.lorem.sentence(),
-              isCurrentAnswer: faker.randomGenerator.boolean(),
-              percent: faker.randomGenerator.integer(100),
-            ),
-            SurveyAnswerEntity(
-              answer: faker.lorem.sentence(),
-              isCurrentAnswer: faker.randomGenerator.boolean(),
-              percent: faker.randomGenerator.integer(100),
-            )
-          ]);
 
   PostExpectation mockLoadCall() =>
       when(loadSurveyResultStream.loadBySurvey(surveyId: anyNamed('surveyId')));
@@ -56,7 +40,7 @@ void main() {
 
   void mockSaveResult(SurveyResultEntity data) {
     saveResult = data;
-    mockSaveCall().thenAnswer((_) async => loadResult);
+    mockSaveCall().thenAnswer((_) async => saveResult);
   }
 
   void mockSaveurveysError(DomainError error) =>
@@ -71,12 +55,12 @@ void main() {
                 image: entity.answers[0].image,
                 answer: entity.answers[0].answer,
                 isCurrentAnswer: entity.answers[0].isCurrentAnswer,
-                percent: '${entity.answers[0].percent}'),
+                percent: '${entity.answers[0].percent}%'),
             SurveyAnswerViewModel(
                 image: null,
                 answer: entity.answers[1].answer,
                 isCurrentAnswer: entity.answers[1].isCurrentAnswer,
-                percent: '${entity.answers[1].percent}')
+                percent: '${entity.answers[1].percent}%')
           ]);
 
   setUp(() {
@@ -88,8 +72,8 @@ void main() {
         loadSurveyResultStream: loadSurveyResultStream,
         saveSurveyResult: saveSurveyResult,
         surveyId: surveyId);
-    mockLoadSurveys(mockValidData());
-    mockSaveResult(mockValidData());
+    mockLoadSurveys(FakeSurveyResultFactory.makeSurveyResultEntity());
+    mockSaveResult(FakeSurveyResultFactory.makeSurveyResultEntity());
   });
 
   group('loadData', () {
@@ -101,10 +85,8 @@ void main() {
 
     test('Should emit correct events on success', () async {
       expectLater(sut.isLoadStream, emitsInOrder([true, false]));
-      sut.surveysResultStream.listen(expectAsync1((result) => expect(
-            result,
-            mapToViewModel(loadResult),
-          )));
+      sut.surveysResultStream.listen(
+          expectAsync1((result) => expect(result, mapToViewModel(loadResult))));
 
       await sut.loadData();
     });
