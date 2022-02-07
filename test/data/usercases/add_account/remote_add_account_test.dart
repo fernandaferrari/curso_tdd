@@ -7,6 +7,8 @@ import 'package:test/test.dart';
 import 'package:curso_tdd/data/http/http.dart';
 import 'package:curso_tdd/domain/usecases/usecases.dart';
 
+import '../../../mocks/mocks.dart';
+
 class IHttpClientMock extends Mock implements IHttpClient {}
 
 void main() {
@@ -14,6 +16,7 @@ void main() {
   IHttpClientMock httpClient;
   String url;
   AddAccountParams params;
+  Map apiResult;
 
   PostExpectation mockRequest() => when(httpClient.request(
       url: anyNamed('url'),
@@ -24,10 +27,8 @@ void main() {
     mockRequest().thenThrow(error);
   }
 
-  Map mockValidData() =>
-      {'accessToken': faker.guid.guid(), 'name': faker.person.name()};
-
   void mockHttpData(Map data) {
+    apiResult = data;
     mockRequest().thenAnswer((_) async => data);
   }
 
@@ -35,13 +36,8 @@ void main() {
     httpClient = IHttpClientMock();
     url = faker.internet.httpUrl();
     sut = RemoteAddAccount(httpClient: httpClient, url: url);
-    params = AddAccountParams(
-      email: faker.internet.email(),
-      password: faker.internet.password(),
-      name: faker.person.name(),
-      passwordConfirmation: faker.internet.password(),
-    );
-    mockHttpData(mockValidData());
+    params = FakeParamsFactory.makeAddAccount();
+    mockHttpData(FakeAccountFactory.makeApiJson());
   });
 
   test('Quando usar a URL certa HTTPClient', () async {
@@ -92,13 +88,9 @@ void main() {
   });
 
   test('Quando retornar Addaccount e HttpClient returns 200', () async {
-    final validData = mockValidData();
-
-    mockHttpData(validData);
-
     final account = await sut.add(params);
 
-    expect(account.token, validData['accessToken']);
+    expect(account.token, apiResult['accessToken']);
   });
 
   test(
