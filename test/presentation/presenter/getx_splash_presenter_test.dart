@@ -1,21 +1,21 @@
 import 'package:curso_tdd/domain/entities/entities.dart';
 import 'package:curso_tdd/presentation/presenter/presenter.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
+import 'package:mocktail/mocktail.dart';
 
 import 'package:curso_tdd/domain/usecases/load_current_account.dart';
 
-import '../../mocks/mocks.dart';
+import '../../domain/mocks/mocks.dart';
 
 class LoadCurrentAccountSpy extends Mock implements LoadCurrentAccount {}
 
 void main() {
-  LoadCurrentAccountSpy loadCurrentAccount;
-  GetxSplashPresenter sut;
+  late LoadCurrentAccountSpy loadCurrentAccount;
+  late GetxSplashPresenter sut;
 
-  PostExpectation mockLoadCurrentCall() => when(loadCurrentAccount.load());
+  When mockLoadCurrentCall() => when(() => loadCurrentAccount.load());
 
-  void mockLoadCurrentAccount({AccountEntity account}) {
+  void mockLoadCurrentAccount({required AccountEntity account}) {
     mockLoadCurrentCall().thenAnswer((_) async => account);
   }
 
@@ -26,28 +26,12 @@ void main() {
   setUp(() {
     loadCurrentAccount = LoadCurrentAccountSpy();
     sut = GetxSplashPresenter(loadCurrentAccount: loadCurrentAccount);
-    mockLoadCurrentAccount(account: FakeAccountFactory.makeEntities());
+    mockLoadCurrentAccount(account: EntityFactory.makeAccount());
   });
 
   test('Should go to surveys page on sucess', () async {
     sut.navigateToStream
         .listen(expectAsync1((page) => expect(page, '/surveys')));
-
-    await sut.checkAccount();
-  });
-
-  test('should go to login page on null result', () async {
-    mockLoadCurrentAccount(account: null);
-
-    sut.navigateToStream.listen(expectAsync1((page) => expect(page, '/login')));
-
-    await sut.checkAccount();
-  });
-
-  test('should go to login page on null token', () async {
-    mockLoadCurrentAccount(account: AccountEntity(token: null));
-
-    sut.navigateToStream.listen(expectAsync1((page) => expect(page, '/login')));
 
     await sut.checkAccount();
   });

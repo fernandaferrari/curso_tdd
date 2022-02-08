@@ -3,7 +3,6 @@ import 'package:curso_tdd/presentation/presenter/dependencies/dependencies.dart'
 import 'package:curso_tdd/ui/helpers/errors/ui_error.dart';
 import 'package:curso_tdd/ui/pages/pages.dart';
 import 'package:get/state_manager.dart';
-import 'package:meta/meta.dart';
 
 import '../../domain/helpers/helpers.dart';
 import '../../domain/usecases/usecases.dart';
@@ -15,19 +14,19 @@ class GetxLoginPresenter extends GetxController
   final IAuthentication authentication;
   final ISaveCurrentAccount saveCurrentAccount;
 
-  String _email;
-  String _password;
+  String? _email;
+  String? _password;
 
-  var _emailError = Rx<UIError>();
-  var _passwordError = Rx<UIError>();
+  var _emailError = Rx<UIError?>(null);
+  var _passwordError = Rx<UIError?>(null);
 
-  Stream<UIError> get emailErrorStream => _emailError.stream;
-  Stream<UIError> get passwordErrorStream => _passwordError.stream;
+  Stream<UIError?> get emailErrorStream => _emailError.stream;
+  Stream<UIError?> get passwordErrorStream => _passwordError.stream;
 
   GetxLoginPresenter(
-      {@required this.validation,
-      @required this.authentication,
-      @required this.saveCurrentAccount});
+      {required this.validation,
+      required this.authentication,
+      required this.saveCurrentAccount});
 
   void validateEmail(String email) {
     _email = email;
@@ -41,7 +40,7 @@ class GetxLoginPresenter extends GetxController
     _validateForm();
   }
 
-  UIError _validateField(field) {
+  UIError? _validateField(field) {
     final _formData = {
       'email': _email,
       'password': _password,
@@ -71,7 +70,7 @@ class GetxLoginPresenter extends GetxController
       mainError = null;
       isLoading = true;
       final account = await authentication
-          .auth(AuthenticationParams(email: _email, secret: _password));
+          .auth(AuthenticationParams(email: _email!, secret: _password!));
       await saveCurrentAccount.save(account);
       isNavigate = '/surveys';
     } on DomainError catch (error) {

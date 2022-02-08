@@ -37,7 +37,7 @@ class LoginPage extends StatelessWidget
               ),
               Padding(
                 padding: const EdgeInsets.all(32),
-                child: Provider(
+                child: ListenableProvider(
                   create: (_) => presenter,
                   child: Form(
                       child: Column(
@@ -48,7 +48,7 @@ class LoginPage extends StatelessWidget
                         child: PasswordInput(),
                       ),
                       LoginButton(),
-                      FlatButton.icon(
+                      TextButton.icon(
                           onPressed: presenter.goToSingUp,
                           icon: const Icon(Icons.person),
                           label: Text(R.strings.addAccount)),

@@ -5,9 +5,9 @@ import 'package:curso_tdd/ui/pages/survey_result/components/components.dart';
 
 class SurveyResult extends StatelessWidget {
   final SurveysResultViewModel viewModel;
-  final void Function({@required String answer}) onSave;
+  final void Function({required String answer}) onSave;
 
-  const SurveyResult({Key key, @required this.viewModel, @required this.onSave})
+  const SurveyResult({Key? key, required this.viewModel, required this.onSave})
       : super(key: key);
 
   @override

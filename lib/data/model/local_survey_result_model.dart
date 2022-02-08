@@ -1,5 +1,4 @@
 import 'package:curso_tdd/domain/entities/entities.dart';
-import 'package:meta/meta.dart';
 
 class LocalSurveyResultModel {
   final String surveyId;
@@ -7,9 +6,9 @@ class LocalSurveyResultModel {
   final List<LocalSurveyAnswerModel> answers;
 
   LocalSurveyResultModel({
-    @required this.surveyId,
-    @required this.question,
-    @required this.answers,
+    required this.surveyId,
+    required this.question,
+    required this.answers,
   });
 
   factory LocalSurveyResultModel.fromJson(Map json) {
@@ -50,15 +49,15 @@ class LocalSurveyResultModel {
 }
 
 class LocalSurveyAnswerModel {
-  final String image;
+  final String? image;
   final String answer;
   final bool isCurrentAnswer;
   final int percent;
   LocalSurveyAnswerModel({
     this.image,
-    @required this.answer,
-    @required this.isCurrentAnswer,
-    @required this.percent,
+    required this.answer,
+    required this.isCurrentAnswer,
+    required this.percent,
   });
 
   factory LocalSurveyAnswerModel.fromJson(Map json) {

@@ -1,7 +1,6 @@
 import 'package:curso_tdd/presentation/mixins/mixins.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:meta/meta.dart';
 
 import 'package:curso_tdd/ui/helpers/errors/ui_error.dart';
 import 'package:curso_tdd/ui/pages/surveys/surveys_presenter.dart';
@@ -16,10 +15,10 @@ class GetxSurveysPresenter extends GetxController
   final LoadSurveys loadSurveysStream;
 
   GetxSurveysPresenter({
-    @required this.loadSurveysStream,
+    required this.loadSurveysStream,
   });
 
-  final _surveys = Rx<List<SurveysViewModel>>();
+  final _surveys = Rx<List<SurveysViewModel>>([]);
 
   Stream<List<SurveysViewModel>> get surveysStream => _surveys.stream;
 

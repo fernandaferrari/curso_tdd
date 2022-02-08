@@ -1,11 +1,8 @@
 import 'package:curso_tdd/main/factories/factories.dart';
-import 'package:curso_tdd/main/factories/pages/splash/splash.dart';
 import 'package:curso_tdd/ui/components/components.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-
-import 'factories/pages/signup/signup.dart';
 
 void main() {
   runApp(App());

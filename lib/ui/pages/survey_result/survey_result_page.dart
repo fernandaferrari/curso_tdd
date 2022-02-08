@@ -1,8 +1,6 @@
 import 'package:curso_tdd/ui/components/components.dart';
 import 'package:curso_tdd/ui/pages/pages.dart';
-import 'package:curso_tdd/ui/pages/survey_result/survey_result_presenter.dart';
 import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
 import 'package:curso_tdd/ui/mixins/mixins.dart';
 
 import 'package:curso_tdd/ui/helpers/helpers.dart';
@@ -13,7 +11,7 @@ class SurveyResultPage extends StatelessWidget
     with LoadingManager, SessionManager {
   final SurveyResultPresenter presenter;
 
-  const SurveyResultPage({Key key, @required this.presenter}) : super(key: key);
+  const SurveyResultPage({Key? key, required this.presenter}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,19 +25,19 @@ class SurveyResultPage extends StatelessWidget
 
         presenter.loadData();
 
-        return StreamBuilder<SurveysResultViewModel>(
+        return StreamBuilder<SurveysResultViewModel?>(
             stream: presenter.surveysResultStream,
             builder: (context, snapshot) {
               if (snapshot.hasError) {
                 return ReloadScreen(
-                  error: snapshot.error,
+                  error: snapshot.error.toString(),
                   reload: presenter.loadData,
                 );
               }
 
               if (snapshot.hasData) {
                 return SurveyResult(
-                  viewModel: snapshot.data,
+                  viewModel: snapshot.data!,
                   onSave: presenter.save,
                 );
               }

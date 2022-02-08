@@ -5,7 +5,6 @@ import 'package:curso_tdd/ui/components/components.dart';
 import 'package:curso_tdd/ui/helpers/helpers.dart';
 import 'package:curso_tdd/ui/pages/signup/components/components.dart';
 import 'package:curso_tdd/ui/pages/signup/signup_presenter.dart';
-import 'package:meta/meta.dart';
 import 'package:provider/provider.dart';
 
 class SignUpPage extends StatelessWidget
@@ -13,7 +12,7 @@ class SignUpPage extends StatelessWidget
   final SignUpPresenter presenter;
 
   SignUpPage({
-    @required this.presenter,
+    required this.presenter,
   });
 
   @override
@@ -40,7 +39,7 @@ class SignUpPage extends StatelessWidget
               ),
               Padding(
                 padding: const EdgeInsets.all(32),
-                child: Provider(
+                child: ListenableProvider(
                   create: (_) => presenter,
                   child: Form(
                       child: Column(
@@ -58,7 +57,7 @@ class SignUpPage extends StatelessWidget
                         child: ConfirmPasswordInput(),
                       ),
                       SignUpButton(),
-                      FlatButton.icon(
+                      TextButton.icon(
                           onPressed: presenter.goToLogin,
                           icon: const Icon(Icons.exit_to_app),
                           label: Text(R.strings.login)),

@@ -12,6 +12,6 @@ extension SurveyAnswerEntityExtensions on SurveyAnswerEntity {
   SurveyAnswerViewModel toViewModel() => SurveyAnswerViewModel(
       image: image,
       answer: answer,
-      isCurrentAnswer: isCurrentAnswer,
-      percent: '$percent%');
+      percent: '$percent%',
+      isCurrentAnswer: isCurrentAnswer);
 }

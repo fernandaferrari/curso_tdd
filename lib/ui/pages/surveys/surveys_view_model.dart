@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:meta/meta.dart';
 
 class SurveysViewModel extends Equatable {
   final String id;
@@ -7,10 +6,10 @@ class SurveysViewModel extends Equatable {
   final String date;
   final bool didAnswer;
   SurveysViewModel({
-    @required this.id,
-    @required this.question,
-    @required this.date,
-    @required this.didAnswer,
+    required this.id,
+    required this.question,
+    required this.date,
+    required this.didAnswer,
   });
 
   @override

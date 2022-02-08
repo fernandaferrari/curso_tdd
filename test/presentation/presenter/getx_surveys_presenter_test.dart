@@ -5,18 +5,18 @@ import 'package:curso_tdd/presentation/presenter/getx_surveys_presenter.dart';
 import 'package:curso_tdd/ui/helpers/helpers.dart';
 import 'package:curso_tdd/ui/pages/surveys/surveys_view_model.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
+import 'package:mocktail/mocktail.dart';
 
-import '../../mocks/mocks.dart';
+import '../../domain/mocks/mocks.dart';
 
 class LoadSurveysSpy extends Mock implements LoadSurveys {}
 
 void main() {
-  GetxSurveysPresenter sut;
-  LoadSurveysSpy surveysStream;
-  List<SurveyEntity> surveys;
+  late GetxSurveysPresenter sut;
+  late LoadSurveysSpy surveysStream;
+  late List<SurveyEntity> surveys;
 
-  PostExpectation mockLoadCall() => when(surveysStream.load());
+  When mockLoadCall() => when(() => surveysStream.load());
 
   void mockLoadSurveys(List<SurveyEntity> data) {
     surveys = data;
@@ -31,13 +31,13 @@ void main() {
   setUp(() {
     surveysStream = LoadSurveysSpy();
     sut = GetxSurveysPresenter(loadSurveysStream: surveysStream);
-    mockLoadSurveys(FakeSurveysFactory.makeEntities());
+    mockLoadSurveys(EntityFactory.makeSurveyList());
   });
 
   test('Should call LoadSurveys on loadData', () async {
     await sut.loadData();
 
-    verify(surveysStream.load()).called(1);
+    verify(() => surveysStream.load()).called(1);
   });
 
   test('Should emit correct events on success', () async {

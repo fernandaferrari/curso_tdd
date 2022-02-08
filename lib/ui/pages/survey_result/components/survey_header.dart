@@ -4,8 +4,8 @@ class SurveyHeader extends StatelessWidget {
   final String question;
 
   const SurveyHeader({
-    Key key,
-    this.question,
+    Key? key,
+    required this.question,
   }) : super(key: key);
 
   @override

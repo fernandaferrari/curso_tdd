@@ -1,59 +1,46 @@
 import 'package:curso_tdd/data/usercases/usecase.dart';
 import 'package:curso_tdd/domain/helpers/helpers.dart';
 import 'package:faker/faker.dart';
-import 'package:mockito/mockito.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
 import 'package:curso_tdd/data/http/http.dart';
 import 'package:curso_tdd/domain/usecases/usecases.dart';
 
-import '../../../mocks/mocks.dart';
-
-class IHttpClientMock extends Mock implements IHttpClient {}
+import '../../../domain/mocks/mocks.dart';
+import '../../../infra/mocks/mocks.dart';
+import '../../mocks/mocks.dart';
 
 void main() {
-  RemoteAddAccount sut;
-  IHttpClientMock httpClient;
-  String url;
-  AddAccountParams params;
-  Map apiResult;
-
-  PostExpectation mockRequest() => when(httpClient.request(
-      url: anyNamed('url'),
-      method: anyNamed('method'),
-      body: anyNamed('body')));
-
-  void mockHttpError(HttpError error) {
-    mockRequest().thenThrow(error);
-  }
-
-  void mockHttpData(Map data) {
-    apiResult = data;
-    mockRequest().thenAnswer((_) async => data);
-  }
+  late RemoteAddAccount sut;
+  late HttpClientSpy httpClient;
+  late String url;
+  late AddAccountParams params;
+  late Map apiResult;
 
   setUp(() {
-    httpClient = IHttpClientMock();
+    httpClient = HttpClientSpy();
     url = faker.internet.httpUrl();
     sut = RemoteAddAccount(httpClient: httpClient, url: url);
-    params = FakeParamsFactory.makeAddAccount();
-    mockHttpData(FakeAccountFactory.makeApiJson());
+    params = ParamsFactory.makeAddAccount();
+    apiResult = ApiFactory.makeAccountJson();
+    httpClient.mockHttpResponse(apiResult);
   });
 
   test('Quando usar a URL certa HTTPClient', () async {
     await sut.add(params);
 
-    verify((httpClient.request(url: url, method: 'post', body: {
-      'email': params.email,
-      'password': params.password,
-      'name': params.name,
-      'passwordConfirmation': params.passwordConfirmation,
-    })));
+    verify(() => (httpClient.request(url: url, method: 'post', body: {
+          'email': params.email,
+          'password': params.password,
+          'name': params.name,
+          'passwordConfirmation': params.passwordConfirmation,
+        })));
   });
 
   test('Quando ocorrer um erro inesperado pelo HttpClient returns 400',
       () async {
-    mockHttpError(HttpError.badRequest);
+    httpClient.mockHttpResponseError(HttpError.badRequest);
 
     final future = sut.add(params);
 
@@ -62,7 +49,7 @@ void main() {
 
   test('Quando ocorrer um erro inesperado pelo HttpClient returns 404',
       () async {
-    mockHttpError(HttpError.notFound);
+    httpClient.mockHttpResponseError(HttpError.notFound);
 
     final future = sut.add(params);
 
@@ -70,7 +57,7 @@ void main() {
   });
 
   test('Quando ocorrer um erro ServerError e HttpClient returns 500', () async {
-    mockHttpError(HttpError.serverError);
+    httpClient.mockHttpResponseError(HttpError.serverError);
 
     final future = sut.add(params);
 
@@ -80,7 +67,7 @@ void main() {
   test(
       'Quando ocorrer um erro InvalidCredentialsError e HttpClient returns 403',
       () async {
-    mockHttpError(HttpError.forbidden);
+    httpClient.mockHttpResponseError(HttpError.forbidden);
 
     final future = sut.add(params);
 
@@ -96,7 +83,7 @@ void main() {
   test(
       'retorna throw UnexpectedError e HttpClient returns 200 quando a dados invalidos',
       () async {
-    mockHttpData({'invalid_key': 'invalid_value'});
+    httpClient.mockHttpResponse({'invalid_key': 'invalid_value'});
 
     final future = sut.add(params);
 

@@ -1,7 +1,6 @@
 import 'package:curso_tdd/data/usercases/authentication/authentication.dart';
 import 'package:curso_tdd/domain/usecases/usecases.dart';
 import 'package:curso_tdd/main/factories/http/http.dart';
-import 'package:curso_tdd/main/factories/http/http_client_factory.dart';
 
 IAuthentication makeRemoteAuthentication() {
   return RemoteAuthentication(

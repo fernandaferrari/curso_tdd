@@ -1,7 +1,6 @@
 import 'package:curso_tdd/domain/helpers/helpers.dart';
 import 'package:curso_tdd/presentation/mixins/mixins.dart';
 import 'package:get/state_manager.dart';
-import 'package:meta/meta.dart';
 
 import 'package:curso_tdd/domain/usecases/usecases.dart';
 import 'package:curso_tdd/presentation/presenter/dependencies/dependencies.dart';
@@ -15,27 +14,27 @@ class GetxSignUpPresenter extends GetxController
   final AddAccount addAccount;
   final ISaveCurrentAccount saveCurrentAccount;
 
-  String _email;
-  String _password;
-  String _confirmPassword;
-  String _name;
+  String? _email;
+  String? _password;
+  String? _confirmPassword;
+  String? _name;
 
-  var _nameError = Rx<UIError>();
-  var _emailError = Rx<UIError>();
-  var _passwordError = Rx<UIError>();
-  var _confirmPasswordError = Rx<UIError>();
+  var _nameError = Rx<UIError?>(null);
+  var _emailError = Rx<UIError?>(null);
+  var _passwordError = Rx<UIError?>(null);
+  var _confirmPasswordError = Rx<UIError?>(null);
 
   GetxSignUpPresenter({
-    @required this.validation,
-    @required this.addAccount,
-    @required this.saveCurrentAccount,
+    required this.validation,
+    required this.addAccount,
+    required this.saveCurrentAccount,
   });
 
-  Stream<UIError> get emailErrorStream => _emailError.stream;
-  Stream<UIError> get passwordErrorStream => _passwordError.stream;
-  Stream<UIError> get confirmPasswordErrorStream =>
+  Stream<UIError?> get emailErrorStream => _emailError.stream;
+  Stream<UIError?> get passwordErrorStream => _passwordError.stream;
+  Stream<UIError?> get confirmPasswordErrorStream =>
       _confirmPasswordError.stream;
-  Stream<UIError> get nameErrorStream => _nameError.stream;
+  Stream<UIError?> get nameErrorStream => _nameError.stream;
 
   void validateEmail(String email) {
     _email = email;
@@ -63,7 +62,7 @@ class GetxSignUpPresenter extends GetxController
     _validateForm();
   }
 
-  UIError _validateField(String field) {
+  UIError? _validateField(String field) {
     final _formData = {
       'name': _name,
       'email': _email,
@@ -99,10 +98,10 @@ class GetxSignUpPresenter extends GetxController
       mainError = null;
       isLoading = true;
       final account = await addAccount.add(AddAccountParams(
-          email: _email,
-          password: _password,
-          name: _name,
-          passwordConfirmation: _confirmPassword));
+          email: _email!,
+          password: _password!,
+          name: _name!,
+          passwordConfirmation: _confirmPassword!));
 
       await saveCurrentAccount.save(account);
       isNavigate = '/surveys';

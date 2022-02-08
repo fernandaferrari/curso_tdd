@@ -1,15 +1,13 @@
 import 'package:curso_tdd/ui/pages/pages.dart';
 import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
 
-import 'package:curso_tdd/ui/pages/surveys/surveys_view_model.dart';
 import 'package:provider/provider.dart';
 
 class SurveyItem extends StatelessWidget {
   final SurveysViewModel viewModel;
   const SurveyItem({
-    Key key,
-    @required this.viewModel,
+    Key? key,
+    required this.viewModel,
   }) : super(key: key);
 
   @override

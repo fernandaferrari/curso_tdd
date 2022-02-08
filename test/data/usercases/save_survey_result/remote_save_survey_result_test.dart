@@ -3,27 +3,26 @@ import 'package:curso_tdd/domain/entities/entities.dart';
 import 'package:curso_tdd/domain/helpers/helpers.dart';
 import 'package:faker/faker.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
+import 'package:mocktail/mocktail.dart';
 
 import 'package:curso_tdd/data/http/http.dart';
 
-import '../../../mocks/mocks.dart';
+import '../../../infra/mocks/mocks.dart';
 
 class HttpClientSpy extends Mock implements IHttpClient {}
 
 void main() {
-  RemoteSaveSurveyResult sut;
-  HttpClientSpy httpClient;
-  String url;
-  String answer;
+  late RemoteSaveSurveyResult sut;
+  late HttpClientSpy httpClient;
+  late String url;
+  late String answer;
+  late Map surveyResult;
 
-  Map surveyResult;
-
-  PostExpectation mockRequestCall() => when(httpClient.request(
-      url: anyNamed("url"),
-      method: anyNamed("method"),
-      body: anyNamed("body"),
-      headers: anyNamed("headers")));
+  When mockRequestCall() => when(() => httpClient.request(
+      url: any(named: "url"),
+      method: any(named: "method"),
+      body: any(named: "body"),
+      headers: any(named: "headers")));
   void mockHttpData(dynamic data) {
     surveyResult = data;
     mockRequestCall().thenAnswer((_) async => data);
@@ -36,13 +35,13 @@ void main() {
     url = faker.internet.httpUrl();
     httpClient = HttpClientSpy();
     sut = RemoteSaveSurveyResult(url: url, httpClient: httpClient);
-    mockHttpData(FakeSurveyResultFactory.makeApiJson());
+    mockHttpData(ApiFactory.makeSurveyResult());
   });
 
   test('Should call HttClient with correct values', () async {
     await sut.save(answer: answer);
 
-    verify(
+    verify(() =>
         httpClient.request(url: url, method: 'put', body: {'answer': answer}));
   });
 
@@ -74,7 +73,7 @@ void main() {
   test(
       'Should return UnexpectedError if HttpClient returns 200 with invalid data',
       () async {
-    mockHttpData(FakeSurveyResultFactory.makeInvalidApiJson());
+    mockHttpData(ApiFactory.makeInvalidJson());
 
     final future = sut.save(answer: answer);
 

@@ -2,7 +2,6 @@ import 'package:curso_tdd/data/model/model.dart';
 
 import '../../domain/entities/entities.dart';
 import '../http/http.dart';
-import 'package:meta/meta.dart';
 
 class RemoteSurveyResultModel {
   final String surveyId;
@@ -10,9 +9,9 @@ class RemoteSurveyResultModel {
   final List<RemoteSurveyAnswerModel> asnwers;
 
   RemoteSurveyResultModel({
-    @required this.surveyId,
-    @required this.question,
-    @required this.asnwers,
+    required this.surveyId,
+    required this.question,
+    required this.asnwers,
   });
 
   factory RemoteSurveyResultModel.fromJson(Map json) {

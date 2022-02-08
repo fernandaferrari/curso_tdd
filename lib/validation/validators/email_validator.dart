@@ -9,7 +9,7 @@ class EmailValidator extends Equatable implements FieldValidation {
   EmailValidator(this.field);
 
   @override
-  ValidationError validate(Map input) {
+  ValidationError? validate(Map input) {
     final regex = RegExp(
         r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
     final isValid =

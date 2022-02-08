@@ -1,5 +1,4 @@
 import '../../domain/entities/entities.dart';
-import 'package:meta/meta.dart';
 
 class LocalSurveyModel {
   final String id;
@@ -8,10 +7,10 @@ class LocalSurveyModel {
   final bool didAnswer;
 
   LocalSurveyModel({
-    @required this.id,
-    @required this.question,
-    @required this.date,
-    @required this.didAnswer,
+    required this.id,
+    required this.question,
+    required this.date,
+    required this.didAnswer,
   });
 
   factory LocalSurveyModel.fromJson(Map json) {

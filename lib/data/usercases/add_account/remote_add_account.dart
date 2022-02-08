@@ -3,13 +3,12 @@ import 'package:curso_tdd/data/model/model.dart';
 import 'package:curso_tdd/domain/entities/entities.dart';
 import 'package:curso_tdd/domain/helpers/helpers.dart';
 import 'package:curso_tdd/domain/usecases/usecases.dart';
-import 'package:meta/meta.dart';
 
 class RemoteAddAccount implements AddAccount {
   final IHttpClient httpClient;
   final String url;
 
-  RemoteAddAccount({@required this.httpClient, @required this.url});
+  RemoteAddAccount({required this.httpClient, required this.url});
 
   Future<AccountEntity> add(AddAccountParams params) async {
     final body = RemoteAddAccountParams.fromDomain(params).toJson();
@@ -32,10 +31,10 @@ class RemoteAddAccountParams {
   final String passwordConfirmation;
 
   RemoteAddAccountParams({
-    @required this.email,
-    @required this.password,
-    @required this.name,
-    @required this.passwordConfirmation,
+    required this.email,
+    required this.password,
+    required this.name,
+    required this.passwordConfirmation,
   });
 
   factory RemoteAddAccountParams.fromDomain(AddAccountParams params) =>

@@ -3,22 +3,22 @@ import 'package:curso_tdd/domain/entities/entities.dart';
 import 'package:curso_tdd/domain/helpers/helpers.dart';
 import 'package:faker/faker.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
+import 'package:mocktail/mocktail.dart';
 
 import 'package:curso_tdd/data/http/http.dart';
 
-import '../../../mocks/mocks.dart';
+import '../../../infra/mocks/mocks.dart';
 
 class HttpClientSpy extends Mock implements IHttpClient {}
 
 void main() {
-  RemoteLoadSurveys sut;
-  HttpClientSpy httpClient;
-  String url;
-  List<dynamic> list;
+  late RemoteLoadSurveys sut;
+  late HttpClientSpy httpClient;
+  late String url;
+  late List<dynamic> list;
 
-  PostExpectation mockRequest() => when(
-      httpClient.request(url: anyNamed('url'), method: anyNamed('method')));
+  When mockRequest() => when(() =>
+      httpClient.request(url: any(named: 'url'), method: any(named: 'method')));
 
   void mockHttpData(List<dynamic> data) {
     list = data;
@@ -33,13 +33,13 @@ void main() {
     url = faker.internet.httpUrl();
     httpClient = HttpClientSpy();
     sut = RemoteLoadSurveys(url: url, httpClient: httpClient);
-    mockHttpData(FakeSurveysFactory.makeApiJson());
+    mockHttpData(ApiFactory.makeSurveyList());
   });
 
   test('Should call HttClient with correct values', () async {
     sut.load();
 
-    verify(httpClient.request(url: url, method: 'get'));
+    verify(() => httpClient.request(url: url, method: 'get'));
   });
 
   test('Should return surveys on 200', () async {
@@ -62,7 +62,7 @@ void main() {
   test(
       'Should return UnexpectedError if HttpClient returns 200 with invalid data',
       () async {
-    mockHttpData(FakeSurveysFactory.makeInvalidApiJson());
+    mockHttpData(ApiFactory.makeInvalidList());
 
     final future = sut.load();
 

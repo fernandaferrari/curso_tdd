@@ -3,16 +3,15 @@ import 'package:curso_tdd/data/model/model.dart';
 import 'package:curso_tdd/domain/entities/entities.dart';
 import 'package:curso_tdd/domain/helpers/helpers.dart';
 import 'package:curso_tdd/domain/usecases/load_survey_result.dart';
-import 'package:meta/meta.dart';
 
 class LocalLoadSurveyResult implements LoadSurveyResult {
   final CacheStorage cacheStorage;
   LocalLoadSurveyResult({
-    @required this.cacheStorage,
+    required this.cacheStorage,
   });
 
   @override
-  Future<SurveyResultEntity> loadBySurvey({String surveyId}) async {
+  Future<SurveyResultEntity> loadBySurvey({required String surveyId}) async {
     try {
       final json = await cacheStorage.fetch('survey_result/$surveyId');
       if (json?.isEmpty != false) {
@@ -33,7 +32,7 @@ class LocalLoadSurveyResult implements LoadSurveyResult {
     }
   }
 
-  Future<void> save({@required SurveyResultEntity surveyResult}) async {
+  Future<void> save({required SurveyResultEntity surveyResult}) async {
     try {
       final json = LocalSurveyResultModel.fromEntity(surveyResult).toJson();
 

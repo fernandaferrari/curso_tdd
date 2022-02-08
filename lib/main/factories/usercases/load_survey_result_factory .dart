@@ -5,14 +5,14 @@ import 'package:curso_tdd/main/factories/http/authorize_http_client_decorator_fa
 
 import '../factories.dart';
 
-LoadSurveyResult makeRemoteLoadSurveyResult(String surveyId) {
+RemoteLoadSurveysResult makeRemoteLoadSurveyResult(String surveyId) {
   return RemoteLoadSurveysResult(
     httpClient: makeAuthorizeHttpClientDecorator(),
     url: makeApiUrl('surveys/$surveyId/results'),
   );
 }
 
-LoadSurveyResult makeLoadLoadSurveyResult(String surveyId) {
+LocalLoadSurveyResult makeLoadLoadSurveyResult(String surveyId) {
   return LocalLoadSurveyResult(cacheStorage: makeLocalStorageAdapter());
 }
 

@@ -1,5 +1,3 @@
-import 'package:meta/meta.dart';
-
 import 'package:curso_tdd/data/cache/cache.dart';
 import 'package:curso_tdd/data/http/http.dart';
 
@@ -9,15 +7,15 @@ class AuthorizeHttpClientDecorator implements IHttpClient {
   final IHttpClient decoratee;
 
   AuthorizeHttpClientDecorator(
-      {@required this.fetchSecureCacheStorage,
-      @required this.deleteSecureCacheStorage,
-      @required this.decoratee});
+      {required this.fetchSecureCacheStorage,
+      required this.deleteSecureCacheStorage,
+      required this.decoratee});
 
   Future<dynamic> request(
-      {@required String url,
-      @required String method,
-      Map body,
-      Map headers}) async {
+      {required String url,
+      required String method,
+      Map? body,
+      Map? headers}) async {
     try {
       final token = await fetchSecureCacheStorage.fetch('token');
       final authorizedHeaders = headers ?? {}

@@ -1,28 +1,28 @@
 import 'package:curso_tdd/data/usercases/authentication/authentication.dart';
 import 'package:faker/faker.dart';
-import 'package:mockito/mockito.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
 import 'package:curso_tdd/data/http/http.dart';
 import 'package:curso_tdd/domain/usecases/usecases.dart';
 import 'package:curso_tdd/domain/helpers/helpers.dart';
 
-import '../../../mocks/fake_account_factory.dart';
-import '../../../mocks/mocks.dart';
+import '../../../domain/mocks/mocks.dart';
+import '../../../infra/mocks/mocks.dart';
 
 class IHttpClientMock extends Mock implements IHttpClient {}
 
 void main() {
-  RemoteAuthentication sut;
-  IHttpClientMock httpClient;
-  String url;
-  AuthenticationParams params;
-  Map apiResult;
+  late RemoteAuthentication sut;
+  late IHttpClientMock httpClient;
+  late String url;
+  late AuthenticationParams params;
+  late Map apiResult;
 
-  PostExpectation mockRequest() => when(httpClient.request(
-      url: anyNamed('url'),
-      method: anyNamed('method'),
-      body: anyNamed('body')));
+  When mockRequest() => when(() => httpClient.request(
+      url: any(named: 'url'),
+      method: any(named: 'method'),
+      body: any(named: 'body')));
 
   void mockHttpData(Map data) {
     apiResult = data;
@@ -37,14 +37,14 @@ void main() {
     httpClient = IHttpClientMock();
     url = faker.internet.httpUrl();
     sut = RemoteAuthentication(httpClient: httpClient, url: url);
-    params = FakeParamsFactory.makeAuthentication();
-    mockHttpData(FakeAccountFactory.makeApiJson());
+    params = ParamsFactory.makeAuthentication();
+    mockHttpData(ApiFactory.makeAccountJson());
   });
 
   test('Quando usar a URL certa HTTPClient', () async {
     await sut.auth(params);
 
-    verify((httpClient.request(
+    verify(() => (httpClient.request(
         url: url,
         method: 'post',
         body: {'email': params.email, 'password': params.secret})));

@@ -1,6 +1,5 @@
 import 'package:curso_tdd/domain/entities/entities.dart';
 import 'package:equatable/equatable.dart';
-import 'package:meta/meta.dart';
 
 class SurveyResultEntity extends Equatable {
   final String surveyId;
@@ -8,9 +7,9 @@ class SurveyResultEntity extends Equatable {
   final List<SurveyAnswerEntity> answers;
 
   SurveyResultEntity({
-    @required this.surveyId,
-    @required this.question,
-    @required this.answers,
+    required this.surveyId,
+    required this.question,
+    required this.answers,
   });
 
   @override

@@ -1,31 +1,30 @@
 import 'package:curso_tdd/domain/entities/survey_result_entity.dart';
 import 'package:curso_tdd/domain/helpers/helpers.dart';
-import 'package:curso_tdd/domain/usecases/load_survey_result.dart';
 import 'package:curso_tdd/domain/usecases/usecases.dart';
 import 'package:curso_tdd/presentation/presenter/presenter.dart';
 import 'package:curso_tdd/ui/helpers/helpers.dart';
 import 'package:curso_tdd/ui/pages/pages.dart';
 import 'package:faker/faker.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
+import 'package:mocktail/mocktail.dart';
 
-import '../../mocks/mocks.dart';
+import '../../domain/mocks/mocks.dart';
 
 class LoadSurveysResultSpy extends Mock implements LoadSurveyResult {}
 
 class SaveSurveysResultSpy extends Mock implements SaveSurveyResult {}
 
 void main() {
-  GetxSurveyResultPresenter sut;
-  LoadSurveysResultSpy loadSurveyResultStream;
-  SaveSurveysResultSpy saveSurveyResult;
-  SurveyResultEntity loadResult;
-  SurveyResultEntity saveResult;
-  String surveyId;
-  String answer;
+  late GetxSurveyResultPresenter sut;
+  late LoadSurveysResultSpy loadSurveyResultStream;
+  late SaveSurveysResultSpy saveSurveyResult;
+  late SurveyResultEntity loadResult;
+  late SurveyResultEntity saveResult;
+  late String surveyId;
+  late String answer;
 
-  PostExpectation mockLoadCall() =>
-      when(loadSurveyResultStream.loadBySurvey(surveyId: anyNamed('surveyId')));
+  When mockLoadCall() => when(() =>
+      loadSurveyResultStream.loadBySurvey(surveyId: any(named: 'surveyId')));
 
   void mockLoadSurveys(SurveyResultEntity data) {
     loadResult = data;
@@ -35,8 +34,8 @@ void main() {
   void mockLoadSurveysError(DomainError error) =>
       mockLoadCall().thenThrow(error);
 
-  PostExpectation mockSaveCall() =>
-      when(saveSurveyResult.save(answer: anyNamed('answer')));
+  When mockSaveCall() =>
+      when(() => saveSurveyResult.save(answer: any(named: 'answer')));
 
   void mockSaveResult(SurveyResultEntity data) {
     saveResult = data;
@@ -57,7 +56,6 @@ void main() {
                 isCurrentAnswer: entity.answers[0].isCurrentAnswer,
                 percent: '${entity.answers[0].percent}%'),
             SurveyAnswerViewModel(
-                image: null,
                 answer: entity.answers[1].answer,
                 isCurrentAnswer: entity.answers[1].isCurrentAnswer,
                 percent: '${entity.answers[1].percent}%')
@@ -72,15 +70,16 @@ void main() {
         loadSurveyResultStream: loadSurveyResultStream,
         saveSurveyResult: saveSurveyResult,
         surveyId: surveyId);
-    mockLoadSurveys(FakeSurveyResultFactory.makeSurveyResultEntity());
-    mockSaveResult(FakeSurveyResultFactory.makeSurveyResultEntity());
+    mockLoadSurveys(EntityFactory.makeSurveyResult());
+    mockSaveResult(EntityFactory.makeSurveyResult());
   });
 
   group('loadData', () {
     test('Should call LoadSurveyResult on loadData', () async {
       await sut.loadData();
 
-      verify(loadSurveyResultStream.loadBySurvey(surveyId: surveyId)).called(1);
+      verify(() => loadSurveyResultStream.loadBySurvey(surveyId: surveyId))
+          .called(1);
     });
 
     test('Should emit correct events on success', () async {
@@ -114,7 +113,7 @@ void main() {
     test('Should call LoadSurveyResult on loadData', () async {
       await sut.save(answer: answer);
 
-      verify(saveSurveyResult.save(answer: answer)).called(1);
+      verify(() => saveSurveyResult.save(answer: answer)).called(1);
     });
 
     test('Should emit correct events on success', () async {

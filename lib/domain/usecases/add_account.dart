@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import '../entities/account_entity.dart';
-import 'package:meta/meta.dart';
 
 abstract class AddAccount {
   Future<AccountEntity> add(AddAccountParams params);
@@ -13,10 +12,10 @@ class AddAccountParams extends Equatable {
   final String passwordConfirmation;
 
   const AddAccountParams({
-    @required this.email,
-    @required this.password,
-    @required this.name,
-    @required this.passwordConfirmation,
+    required this.email,
+    required this.password,
+    required this.name,
+    required this.passwordConfirmation,
   });
 
   toJson() => {

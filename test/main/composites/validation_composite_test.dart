@@ -2,29 +2,29 @@ import 'package:curso_tdd/main/composites/composites.dart';
 import 'package:curso_tdd/presentation/presenter/dependencies/validation.dart';
 import 'package:curso_tdd/validation/dependencies/field_validation.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
+import 'package:mocktail/mocktail.dart';
 
 class FieldValidationMock extends Mock implements FieldValidation {}
 
 void main() {
-  ValidationComposite sut;
-  FieldValidationMock validator1;
-  FieldValidationMock validator2;
+  late ValidationComposite sut;
+  late FieldValidationMock validator1;
+  late FieldValidationMock validator2;
 
-  void mockValidator1(ValidationError error) {
-    when(validator1.validate({'any_field': 'any_value'})).thenReturn(error);
+  void mockValidator1(ValidationError? error) {
+    when(() => validator1.validate(any())).thenReturn(error);
   }
 
-  void mockValidator2(ValidationError error) {
-    when(validator2.validate({'any_field': 'any_value'})).thenReturn(error);
+  void mockValidator2(ValidationError? error) {
+    when(() => validator2.validate(any())).thenReturn(error);
   }
 
   setUp(() {
     validator1 = FieldValidationMock();
     validator2 = FieldValidationMock();
-    when(validator1.field).thenReturn('other_field');
+    when(() => validator1.field).thenReturn('other_field');
     mockValidator1(null);
-    when(validator2.field).thenReturn('any_field');
+    when(() => validator2.field).thenReturn('any_field');
     mockValidator2(null);
 
     sut = ValidationComposite([validator1, validator2]);

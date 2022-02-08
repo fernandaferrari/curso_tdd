@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 class SurveyItems extends StatelessWidget {
   final List<SurveysViewModel> data;
   SurveyItems({
-    Key key,
-    @required this.data,
+    Key? key,
+    required this.data,
   }) : super(key: key);
 
   @override

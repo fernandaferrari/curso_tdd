@@ -3,12 +3,11 @@ import 'package:curso_tdd/data/model/model.dart';
 import 'package:curso_tdd/domain/entities/entities.dart';
 import 'package:curso_tdd/domain/helpers/helpers.dart';
 import 'package:curso_tdd/domain/usecases/load_surveys.dart';
-import 'package:meta/meta.dart';
 
 class LocalLoadSurveys implements LoadSurveys {
   final CacheStorage cacheStorage;
   LocalLoadSurveys({
-    @required this.cacheStorage,
+    required this.cacheStorage,
   });
 
   @override

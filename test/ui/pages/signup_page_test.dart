@@ -1,80 +1,22 @@
-import 'dart:async';
-
 import 'package:curso_tdd/ui/helpers/helpers.dart';
 import 'package:curso_tdd/ui/pages/pages.dart';
-import 'package:curso_tdd/ui/pages/signup/signup_presenter.dart';
 import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
+import 'package:mocktail/mocktail.dart';
 
 import '../helpers/helpers.dart';
-
-class SignUpPresenterSpy extends Mock implements SignUpPresenter {}
+import '../mocks/signup_presenter_spy.dart';
 
 void main() {
-  SignUpPresenterSpy presenter;
-  StreamController<UIError> emailErrorController;
-  StreamController<UIError> passwordErrorController;
-  StreamController<UIError> nameErrorController;
-  StreamController<UIError> passwordConfirmErrorController;
-  StreamController<UIError> mainErrorController;
-  StreamController<bool> isFormValidController;
-  StreamController<bool> isLoadController;
-  StreamController<String> navigateToController;
-
-  void initStreams() {
-    emailErrorController = StreamController<UIError>();
-    passwordErrorController = StreamController<UIError>();
-    nameErrorController = StreamController<UIError>();
-    passwordConfirmErrorController = StreamController<UIError>();
-    isFormValidController = StreamController<bool>();
-    isLoadController = StreamController<bool>();
-    mainErrorController = StreamController<UIError>();
-    navigateToController = StreamController<String>();
-  }
-
-  void mockStreams() {
-    when(presenter.nameErrorStream)
-        .thenAnswer((_) => nameErrorController.stream);
-    when(presenter.emailErrorStream)
-        .thenAnswer((_) => emailErrorController.stream);
-    when(presenter.passwordErrorStream)
-        .thenAnswer((_) => passwordErrorController.stream);
-    when(presenter.confirmPasswordErrorStream)
-        .thenAnswer((_) => passwordConfirmErrorController.stream);
-    when(presenter.isFormValidStream)
-        .thenAnswer((_) => isFormValidController.stream);
-    when(presenter.isLoadStream).thenAnswer((_) => isLoadController.stream);
-    when(presenter.mainErrorStream)
-        .thenAnswer((_) => mainErrorController.stream);
-    when(presenter.navigateToStream)
-        .thenAnswer((_) => navigateToController.stream);
-  }
-
-  void closeStreams() {
-    nameErrorController.close();
-    emailErrorController.close();
-    passwordErrorController.close();
-    passwordConfirmErrorController.close();
-    isFormValidController.close();
-    isLoadController.close();
-    mainErrorController.close();
-    navigateToController.close();
-  }
+  late SignUpPresenterSpy presenter;
 
   Future<void> loadPage(WidgetTester tester) async {
     presenter = SignUpPresenterSpy();
-    initStreams();
-    mockStreams();
 
     await tester.pumpWidget(makePage(
         path: '/signup', page: () => SignUpPage(presenter: presenter)));
   }
-
-  tearDown(() {
-    closeStreams();
-  });
 
   testWidgets('Validação do formulario quando os valores estão corretos ...',
       (tester) async {
@@ -82,38 +24,34 @@ void main() {
 
     final name = faker.person.name();
     await tester.enterText(find.bySemanticsLabel('Nome'), name);
-    verify(presenter.validateName(name));
+    verify(() => presenter.validateName(name));
 
     final email = faker.internet.email();
     await tester.enterText(find.bySemanticsLabel('E-mail'), email);
-    verify(presenter.validateEmail(email));
+    verify(() => presenter.validateEmail(email));
 
     final password = faker.internet.password();
     await tester.enterText(find.bySemanticsLabel('Senha'), password);
-    verify(presenter.validatePassword(password));
+    verify(() => presenter.validatePassword(password));
 
     final passwordConfirm = faker.internet.password();
     await tester.enterText(
         find.bySemanticsLabel('Confirmar senha.'), passwordConfirm);
-    verify(presenter.validateConfirmPassword(passwordConfirm));
+    verify(() => presenter.validateConfirmPassword(passwordConfirm));
   });
 
   testWidgets('simulação de erro para email...', (tester) async {
     await loadPage(tester);
 
-    when(presenter.emailErrorStream)
-        .thenAnswer((_) => emailErrorController.stream);
-    emailErrorController.add(UIError.requiredField);
+    presenter.emitEmailError(UIError.requiredField);
     await tester.pump();
-
     expect(find.text('Campo obrigatório.'), findsOneWidget);
 
-    emailErrorController.add(UIError.invalidField);
+    presenter.emitEmailError(UIError.invalidField);
     await tester.pump();
-
     expect(find.text('Campo inválido.'), findsOneWidget);
 
-    emailErrorController.add(null);
+    presenter.emitEmailValid();
     await tester.pump();
 
     expect(
@@ -125,19 +63,15 @@ void main() {
   testWidgets('simulação de erro para nome...', (tester) async {
     await loadPage(tester);
 
-    when(presenter.nameErrorStream)
-        .thenAnswer((_) => nameErrorController.stream);
-    nameErrorController.add(UIError.requiredField);
+    presenter.emitNameError(UIError.requiredField);
     await tester.pump();
-
     expect(find.text('Campo obrigatório.'), findsOneWidget);
 
-    nameErrorController.add(UIError.invalidField);
+    presenter.emitNameError(UIError.invalidField);
     await tester.pump();
-
     expect(find.text('Campo inválido.'), findsOneWidget);
 
-    nameErrorController.add(null);
+    presenter.emitNameValid();
     await tester.pump();
 
     expect(
@@ -149,19 +83,15 @@ void main() {
   testWidgets('simulação de erro para password...', (tester) async {
     await loadPage(tester);
 
-    when(presenter.passwordErrorStream)
-        .thenAnswer((_) => passwordErrorController.stream);
-    passwordErrorController.add(UIError.requiredField);
+    presenter.emitPasswordError(UIError.requiredField);
     await tester.pump();
-
     expect(find.text('Campo obrigatório.'), findsOneWidget);
 
-    passwordErrorController.add(UIError.invalidField);
+    presenter.emitPasswordError(UIError.invalidField);
     await tester.pump();
-
     expect(find.text('Campo inválido.'), findsOneWidget);
 
-    passwordErrorController.add(null);
+    presenter.emitPasswordValid();
     await tester.pump();
 
     expect(
@@ -173,19 +103,15 @@ void main() {
   testWidgets('simulação de erro para confirmar senha...', (tester) async {
     await loadPage(tester);
 
-    when(presenter.confirmPasswordErrorStream)
-        .thenAnswer((_) => passwordConfirmErrorController.stream);
-    passwordConfirmErrorController.add(UIError.requiredField);
+    presenter.emitPasswordConfirmationError(UIError.requiredField);
     await tester.pump();
-
     expect(find.text('Campo obrigatório.'), findsOneWidget);
 
-    passwordConfirmErrorController.add(UIError.invalidField);
+    presenter.emitPasswordConfirmationError(UIError.invalidField);
     await tester.pump();
-
     expect(find.text('Campo inválido.'), findsOneWidget);
 
-    passwordConfirmErrorController.add(null);
+    presenter.emitPasswordConfirmationValid();
     await tester.pump();
 
     expect(
@@ -198,10 +124,10 @@ void main() {
   testWidgets('Habilitado botão quando o form é valido...', (tester) async {
     await loadPage(tester);
 
-    isFormValidController.add(true);
+    presenter.emitFormValid();
     await tester.pump();
 
-    final button = tester.widget<RaisedButton>(find.byType(RaisedButton));
+    final button = tester.widget<ElevatedButton>(find.byType(ElevatedButton));
     expect(button.onPressed, isNotNull);
   });
 
@@ -209,10 +135,10 @@ void main() {
       (tester) async {
     await loadPage(tester);
 
-    isFormValidController.add(false);
+    presenter.emitFormError();
     await tester.pump();
 
-    final button = tester.widget<RaisedButton>(find.byType(RaisedButton));
+    final button = tester.widget<ElevatedButton>(find.byType(ElevatedButton));
     expect(button.onPressed, isNull);
   });
 
@@ -221,20 +147,20 @@ void main() {
       (tester) async {
     await loadPage(tester);
 
-    isFormValidController.add(true);
+    presenter.emitFormValid();
     await tester.pump();
-    final button = find.byType(RaisedButton);
+    final button = find.byType(ElevatedButton);
     await tester.ensureVisible(button);
     await tester.tap(button);
     await tester.pump();
 
-    verify(presenter.signup()).called(1);
+    verify(() => presenter.signup()).called(1);
   });
 
   testWidgets('Load presente na tela...', (tester) async {
     await loadPage(tester);
 
-    isLoadController.add(true);
+    presenter.emitLoading();
     await tester.pump();
 
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
@@ -243,9 +169,9 @@ void main() {
   testWidgets('Load não esta presente na tela...', (tester) async {
     await loadPage(tester);
 
-    isLoadController.add(true);
+    presenter.emitLoading();
     await tester.pump();
-    isLoadController.add(false);
+    presenter.emitLoading(false);
     await tester.pump();
 
     expect(find.byType(CircularProgressIndicator), findsNothing);
@@ -255,10 +181,10 @@ void main() {
       (tester) async {
     await loadPage(tester);
 
-    mainErrorController.add(UIError.invalidCredentials);
+    presenter.emitMainError(UIError.emailInUse);
     await tester.pump();
 
-    expect(find.text('Credenciais inválidas.'), findsOneWidget);
+    expect(find.text('E-mail já está em uso'), findsOneWidget);
   });
 
   testWidgets(
@@ -266,7 +192,7 @@ void main() {
       (tester) async {
     await loadPage(tester);
 
-    mainErrorController.add(UIError.unexpected);
+    presenter.emitMainError(UIError.unexpected);
     await tester.pump();
 
     expect(find.text('Algo errado aconteceu. Tente novamente em breve.'),
@@ -275,8 +201,7 @@ void main() {
 
   testWidgets('Should change page...', (tester) async {
     await loadPage(tester);
-
-    navigateToController.add('/any_route');
+    presenter.emitNavigateTo('/any_route');
     await tester.pumpAndSettle();
 
     expect(currentRoute, '/any_route');
@@ -286,11 +211,7 @@ void main() {
   testWidgets('Should not change page...', (tester) async {
     await loadPage(tester);
 
-    navigateToController.add('');
-    await tester.pump();
-    expect(currentRoute, '/signup');
-
-    navigateToController.add(null);
+    presenter.emitNavigateTo('');
     await tester.pump();
     expect(currentRoute, '/signup');
   });
@@ -304,6 +225,6 @@ void main() {
     await tester.tap(button);
     await tester.pump();
 
-    verify(presenter.goToLogin()).called(1);
+    verify(() => presenter.goToLogin()).called(1);
   });
 }

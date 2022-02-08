@@ -5,13 +5,13 @@ import 'package:curso_tdd/main/factories/http/authorize_http_client_decorator_fa
 
 import '../factories.dart';
 
-LoadSurveys makeRemoteLoadSurveys() {
+RemoteLoadSurveys makeRemoteLoadSurveys() {
   return RemoteLoadSurveys(
       httpClient: makeAuthorizeHttpClientDecorator(),
       url: makeApiUrl('surveys'));
 }
 
-LoadSurveys makeLocalLoadSurveys() {
+LocalLoadSurveys makeLocalLoadSurveys() {
   return LocalLoadSurveys(cacheStorage: makeLocalStorageAdapter());
 }
 

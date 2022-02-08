@@ -2,7 +2,6 @@ import 'package:curso_tdd/domain/entities/entities.dart';
 import 'package:curso_tdd/presentation/mixins/mixins.dart';
 import 'package:curso_tdd/ui/pages/pages.dart';
 import 'package:get/get.dart';
-import 'package:meta/meta.dart';
 
 import 'package:curso_tdd/ui/helpers/errors/ui_error.dart';
 import 'helpers/survey_result_entity_extensions.dart';
@@ -18,13 +17,13 @@ class GetxSurveyResultPresenter extends GetxController
   final String surveyId;
 
   GetxSurveyResultPresenter(
-      {@required this.loadSurveyResultStream,
-      @required this.saveSurveyResult,
-      @required this.surveyId});
+      {required this.loadSurveyResultStream,
+      required this.saveSurveyResult,
+      required this.surveyId});
 
-  final _surveysResult = Rx<SurveysResultViewModel>();
+  final _surveysResult = Rx<SurveysResultViewModel?>(null);
 
-  Stream<SurveysResultViewModel> get surveysResultStream =>
+  Stream<SurveysResultViewModel?> get surveysResultStream =>
       _surveysResult.stream;
 
   Future<void> loadData() async {
@@ -33,7 +32,7 @@ class GetxSurveyResultPresenter extends GetxController
   }
 
   @override
-  Future<void> save({@required String answer}) async {
+  Future<void> save({required String answer}) async {
     showResultOnAction(() => saveSurveyResult.save(answer: answer));
   }
 
